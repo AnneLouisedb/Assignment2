@@ -40,21 +40,15 @@ X_test = X_test[columns_to_use]
 imputer = SimpleImputer(
     missing_values=np.nan, strategy="constant", fill_value=0
 )
-scaler = StandardScaler()
+
+X_train = imputer.fit_transform(X_train)
 
 #models
-linear_model = LinearRegression()
-ridge = Ridge()
-lasso = Lasso()
-elastic = ElasticNet()
+chosen_model = LinearRegression()
+ridge_model = Ridge()
+lasso_model = Lasso()
+elastic_model = ElasticNet()
 
-preprocess = Pipeline(steps = [("imputer", imputer), ("scale", scaler)])
-
-#models
-chosen_model = Pipeline(steps = [("imputer", imputer), ("scale", scaler), ("model", linear_model)])
-ridge_model = Pipeline(steps = [("imputer", imputer), ("scale", scaler), ("ridge.model", Ridge())])
-lasso_model = Pipeline(steps =[("imputer", imputer),("scale", scaler),  ("ridge.model", Lasso())])
-elastic_model = Pipeline(steps = [("imputer", imputer), ("scale", scaler), ("ridge.model", ElasticNet())])
 
 #list of models
 pipelines = [chosen_model, ridge_model, lasso_model, elastic_model]
@@ -77,7 +71,7 @@ print(f"mean_absolute_error linear: {mean_absolute_error(y_test, y_pred_linear)}
 print(f"mean_absolute_error ridge:  {mean_absolute_error(y_test, y_pred_ridge)}")
 print(f"mean_absolute_error lasso:  {mean_absolute_error(y_test, y_pred_lasso)}")
 print(f"mean_absolute_error net elastic: {mean_absolute_error(y_test, y_pred_elastic)}")
-#ridge regression rives the smalles absolute error
+#ridge regression rives the smallest absolute error
 
 
 #Linear Model
@@ -87,10 +81,10 @@ print(mean_mse)
 
 #Ridge Regressor L1
 ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265, 270, 275, 290, 300, 500 ]}
-#ridge_regressor = GridSearchCV(ridge_model, ridge_params, scoring = 'neg_mean_squared_error', cv=5 )
-#ridge_regressor.fit(X_train, y_train)
-#print(ridge_regressor.best_params_)
-#print(ridge_regressor.best_score_)
+ridge_regressor = GridSearchCV(ridge_model, ridge_params, scoring = 'neg_mean_squared_error', cv=5 )
+ridge_regressor.fit(X_train, y_train)
+print(ridge_regressor.best_params_)
+print(ridge_regressor.best_score_)
 
 #Lasso Regressor L2
 lasso_params = {'alpha':[0.02, 0.024, 0.025, 0.026, 0.03]}
@@ -105,7 +99,10 @@ prediction_ridge = ridge_regressor.predict(X_test)
 
 sns.distplot(y_test-prediction_ridge)
 sns.distplot(y_test-prediction_lasso)
-#Learning curves
+
+
+
+
 
 #Create list of parameters for Ridge Regression
 #normalize = [ True, False]
