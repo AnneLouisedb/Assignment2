@@ -18,6 +18,8 @@ from sklearn.linear_model import ElasticNet, SGDRegressor
 from copy import deepcopy
 from src.extra_functions import plot_model, plot_learning_curves, save_fig
 
+
+
 data_dir = Path("data/")
 img_dir = Path("../img")
 columns_to_use = [
@@ -80,7 +82,10 @@ mean_mse = np.mean(mse)
 print(mean_mse)
 
 #Ridge Regressor L1
-ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265, 270, 275, 290, 300, 500 ]}
+ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20,
+                         200, 230, 250, 265, 270, 275, 290, 300, 500 ],
+                "fit_intercept": [True, False],
+                "solver": ['svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']}
 ridge_regressor = GridSearchCV(ridge_model, ridge_params, scoring = 'neg_mean_squared_error', cv=5 )
 ridge_regressor.fit(X_train, y_train)
 print(ridge_regressor.best_params_)
@@ -100,7 +105,7 @@ elastic_regressor.fit(X_train,y_train)
 print(elastic_regressor.best_params_)
 print(elastic_regressor.best_score_)
 
-#prediction
+#prediction and plots
 prediction_lasso = lasso_regressor.predict(X_test)
 prediction_ridge = ridge_regressor.predict(X_test)
 prediction_elastic = elastic_regressor.predict(X_test)
@@ -112,14 +117,16 @@ save_fig("graphs/lasso_model")
 sns.distplot(y_test-prediction_elastic).set_title('elastic model')
 save_fig("graphs/elastic_model")
 
+
+
+
+
 #Create list of parameters for Ridge Regression
 #normalize = [ True, False]
 #solver = ['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']
 #ridge_parameters = dict(ridge__alpha = [200, 230, 250,265, 270, 275, 290, 300, 500] ,ridge__normalize = normalize, ridge__solver = solver)
 #search_ridge = GridSearchCV(ridge_model, param_grid = ridge_parameters, scoring = 'neg_mean_squared_error', cv=5 )
 #search_ridge.fit(X_train,y_train)
-
-
 
 
 #Hyper-parameter Tuning
