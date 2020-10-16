@@ -42,19 +42,24 @@ imputer = SimpleImputer(
 linear_model = LinearRegression()
 
 chosen_model = Pipeline([("imputer", imputer), ("model", linear_model)])
+ridge_model = Pipeline([("imputer", imputer), ("ridge.model", Ridge())])
+#lasso_model = ...
+#Fitting regressors to the training set
+chosen_model.fit(X_train, y_train)
+ridge_model.fit(X_train, y_train)
+#lasso_model.fit(X_train), y_train)
 
-#Preprocessing
-imputer.fit(X_train, y_train)
-linear_model.fit(imputer.transform(X_train), y_train)
-y_pred = linear_model.predict(imputer.transform(X_test))
-print(mean_absolute_error(y_test, y_pred))
+#predicting the Test set results
+
+
+
+#linear_model.fit(imputer.transform(X_train), y_train)
+#y_pred = linear_model.predict(imputer.transform(X_test))
+#print(mean_absolute_error(y_test, y_pred))
 
 #Regularisation, L1 (Lasso) and L2 (Ridge)
-rr = Ridge(alpha=0.01)
-#the higher alpha, the more restriction on the coefficients.
-rr.fit(imputer.transform(X_train), y_train)
-Ridge_train_score = rr.score(imputer.transform(X_train),y_train)
-Ridge_test_score = rr.score(X_test, y_test)
+
+
 #Hyper-parameter Tuning
 
 #Early Stopping
