@@ -47,12 +47,16 @@ imputer = SimpleImputer(
 X_train = imputer.fit_transform(X_train)
 
 #looking at data
+plt.figure()
 plt.scatter(all_data[target_column], all_data.drop(columns=target_column)['Garage Area'])
-save_fig("graphs/garagearea")
+plt.savefig("graphs/garagearea")
+plt.figure()
 plt.scatter(all_data[target_column], all_data.drop(columns=target_column)['Overall Qual'])
-save_fig("graphs/overallquality")
+plt.savefig("graphs/overallquality")
+plt.figure()
 plt.scatter(all_data[target_column], all_data.drop(columns=target_column)["Total Bsmt SF"])
-save_fig("graphs/totalbsmtsf")
+plt.savefig("graphs/totalbsmtsf")
+
 #models
 chosen_model = LinearRegression()
 ridge_model = Ridge()
@@ -82,6 +86,10 @@ print(f"mean_absolute_error ridge:  {mean_absolute_error(y_test, y_pred_ridge)}"
 print(f"mean_absolute_error lasso:  {mean_absolute_error(y_test, y_pred_lasso)}")
 print(f"mean_absolute_error net elastic: {mean_absolute_error(y_test, y_pred_elastic)}")
 
+#plot predicted values
+plt.figure()
+plt.scatter(y_test, y_pred_ridge)
+plt.savefig("graphs/ridge_predictedvalues")
 #Hyper-parameter Tuning
 
 #Linear Model
@@ -121,18 +129,18 @@ print(elastic_regressor.best_score_)
 prediction_lasso = lasso_regressor.predict(X_test)
 prediction_ridge = ridge_regressor.predict(X_test)
 prediction_elastic = elastic_regressor.predict(X_test)
-
+plt.figure()
 sns.distplot(y_test-prediction_ridge).set_title('ridge model')
-save_fig("graphs/ridge_model")
-
+plt.savefig("graphs/ridge_model")
+plt.figure()
 sns.distplot(y_test-prediction_lasso).set_title('lasso model')
-save_fig("graphs/lasso_model")
-
+plt.savefig("graphs/lasso_model")
+plt.figure()
 sns.distplot(y_test-prediction_elastic).set_title('elastic model')
-save_fig("graphs/elastic_model")
-
+plt.savefig("graphs/elastic_model")
+plt.figure()
 plt.scatter(X_train, y_train)
-save_fig("graphs/scatter training")
+plt.savefig("graphs/scatter training")
 
 #Early Stopping
 alphas = [1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20,
@@ -143,7 +151,7 @@ cv_ridge = pd.Series(cv_ridge, index = alphas)
 cv_ridge.plot(title = "Validation - Just Do It")
 plt.xlabel("alpha")
 plt.ylabel("rmse")
-save_fig('graphs/validation_ridge')
+plt.savefig('graphs/validation_ridge')
 
 
 #Interpreting Learning Curves
