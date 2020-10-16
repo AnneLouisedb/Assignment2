@@ -80,7 +80,10 @@ print(f"mean_absolute_error net elastic: {mean_absolute_error(y_test, y_pred_ela
 #ridge regression rives the smalles absolute error
 
 
-
+#Linear Model
+mse = cross_val_score(chosen_model, X_train, y_train, scoring = 'neg_mean_squared_error', cv=5)
+mean_mse = np.mean(mse)
+print(mean_mse)
 
 
 
