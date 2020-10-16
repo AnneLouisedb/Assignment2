@@ -75,6 +75,7 @@ print(f"mean_absolute_error ridge:  {mean_absolute_error(y_test, y_pred_ridge)}"
 print(f"mean_absolute_error lasso:  {mean_absolute_error(y_test, y_pred_lasso)}")
 print(f"mean_absolute_error net elastic: {mean_absolute_error(y_test, y_pred_elastic)}")
 
+#Hyper-parameter Tuning
 
 #Linear Model
 mse = cross_val_score(chosen_model, X_train, y_train, scoring = 'neg_mean_squared_error', cv=5)
@@ -116,27 +117,23 @@ prediction_elastic = elastic_regressor.predict(X_test)
 
 sns.distplot(y_test-prediction_ridge).set_title('ridge model')
 save_fig("graphs/ridge_model")
+
 sns.distplot(y_test-prediction_lasso).set_title('lasso model')
 save_fig("graphs/lasso_model")
+
 sns.distplot(y_test-prediction_elastic).set_title('elastic model')
 save_fig("graphs/elastic_model")
 
 
-
-#Create list of parameters for Ridge Regression
-#normalize = [ True, False]
-#solver = ['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']
-#search_ridge = GridSearchCV(ridge_model, param_grid = ridge_parameters, scoring = 'neg_mean_squared_error', cv=5 )
-#search_ridge.fit(X_train,y_train)
-
-
-#Hyper-parameter Tuning
-
+plt.scatter(X_train, y_train)
+save_fig("graphs/scatter training")
 
 #Early Stopping
 
 #Interpreting Learning Curves
-
+#RidgeRegression = Ridge(alpha= 5, fit_intercept= True, solver= 'svd')
+#plot_learning_curves(RidgeRegression, X_test, y_test)
+#save_fig("graphs/learningcurve_ridge")
 
 
 
