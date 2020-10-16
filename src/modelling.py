@@ -92,9 +92,13 @@ print(ridge_regressor.best_params_)
 print(ridge_regressor.best_score_)
 
 #Lasso Regressor L2
-lasso_params = {'alpha':[0.02, 0.024, 0.025, 0.026, 0.03]}
+lasso_params = {'alpha':[0.02, 0.024, 0.025, 0.026, 0.03],
+                "fit_intercept": [True, False],
+                "copy_X" : [True, False],
+                "selection" :['cyclic', 'random']
+                }
 lasso_regressor = GridSearchCV(lasso_model, lasso_params, scoring = 'neg_mean_squared_error', cv=5 )
-lasso_regressor.fit(X_train,y_train)
+lasso_regressor.fit(X_train, y_train)
 print(lasso_regressor.best_params_)
 print(lasso_regressor.best_score_)
 
@@ -119,12 +123,9 @@ save_fig("graphs/elastic_model")
 
 
 
-
-
 #Create list of parameters for Ridge Regression
 #normalize = [ True, False]
 #solver = ['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']
-#ridge_parameters = dict(ridge__alpha = [200, 230, 250,265, 270, 275, 290, 300, 500] ,ridge__normalize = normalize, ridge__solver = solver)
 #search_ridge = GridSearchCV(ridge_model, param_grid = ridge_parameters, scoring = 'neg_mean_squared_error', cv=5 )
 #search_ridge.fit(X_train,y_train)
 
