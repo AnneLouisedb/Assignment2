@@ -65,19 +65,36 @@ print(f"mean_absolute_error ridge:  {mean_absolute_error(y_test, y_pred_ridge)}"
 print(f"mean_absolute_error lasso:  {mean_absolute_error(y_test, y_pred_lasso)}")
 print(f"mean_absolute_error net elastic:  {mean_absolute_error(y_test, y_pred_elastic)}")
 
+#Learning curves
+def plot_learning_curves(model, X, y):
+    X_train, X_val, y_train, y_val = train_test_split(
+        X, y, test_size=0.2, random_state=10
+    )
+    train_errors, val_errors = [], []
+    for m in range(1, len(X_train)):
+        model.fit(X_train[:m], y_train[:m])
+        y_train_predict = model.predict(X_train[:m])
+        y_val_predict = model.predict(X_val)
+        train_errors.append(mean_squared_error(y_train[:m], y_train_predict))
+        val_errors.append(mean_squared_error(y_val, y_val_predict))
 
-
+    plt.plot(np.sqrt(train_errors), "r-+", linewidth=2, label="train")
+    plt.plot(np.sqrt(val_errors), "b-", linewidth=3, label="val")
+    plt.legend(loc="upper right", fontsize=14)
+    plt.xlabel("Training set size", fontsize=14)
+    plt.ylabel("RMSE", fontsize=14)
 
 
 #Create list of parameters for Ridge Regression
-normalize = [True, False]
-solver = ['auto', 'svd', 'cholesky', 'Isqr', 'sparse_cg','sag','saga' ]
-parameters = dict(ridge__normalize = normalize, ridge__solver = solver)
-search_ridge = GridSearchCV(ridge_model, param_grid = parameters, cv = 5, scoring = 'accuracy' )
+#normalize = [ True, False]
+# solver = ['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']
+#parameters = dict(ridge__alpha = [1,10],ridge__normalize = normalize, ridge__solver = solver)
+#search_ridge = GridSearchCV(ridge_model, param_grid = parameters, cv = 5, scoring = 'accuracy' )
 
 #best estimator
-#search_ridge.fit(X_train, y_train)
-
+#clf = search_ridge.best_params_
+#clf.fit(X_train, y_train)
+#print(f'best sore and parameter combination: {search_ridge.best_score_} and {search_ridge.best_params_}')
 
 
 
