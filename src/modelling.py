@@ -14,7 +14,7 @@ from sklearn.compose import ColumnTransformer, make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import ElasticNet
-
+from src.extra_functions import plot_model
 
 data_dir = Path("data/")
 img_dir = Path("../img")
@@ -83,6 +83,16 @@ def plot_learning_curves(model, X, y):
     plt.legend(loc="upper right", fontsize=14)
     plt.xlabel("Training set size", fontsize=14)
     plt.ylabel("RMSE", fontsize=14)
+
+#Plot learning curves
+plot_learning_curves(chosen_model, X_train, y_train)
+
+plot_learning_curves(ridge_model, X_train, y_train)
+
+plot_learning_curves(lasso_model, X_train, y_train)
+
+plot_learning_curves(elastic_model, X_train, y_train)
+
 
 
 #Create list of parameters for Ridge Regression
