@@ -15,7 +15,6 @@ from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV, cross_val_score, cross_val_predict
 from sklearn.linear_model import ElasticNet, SGDRegressor
 from copy import deepcopy
-from src.evaluation import evaluate_model
 from src.extra_functions import plot_model, plot_learning_curves
 
 data_dir = Path("data/")
@@ -59,12 +58,13 @@ elastic_model = Pipeline(steps = [("imputer", imputer), ("scale", scaler), ("rid
 
 #list of models
 pipelines = [chosen_model, ridge_model, lasso_model, elastic_model]
+pipe_dict = {0: 'linear regression', 1: 'Ridge', 2: 'Lasso', 3: 'NetElastic'}
 
-#Fitting regressors to the training set
-chosen_model.fit(X_train, y_train)
-ridge_model.fit(X_train, y_train)
-lasso_model.fit(X_train, y_train)
-elastic_model.fit(X_train, y_train)
+for pipe in pipelines:
+    pipe.fit(X_train, y_train)
+
+for i, model in enumerate(pipelines):
+    print('{} Test Accuracy: {}'.format(pipe_dict[i],model.predict(X_test)))
 
 #predicting the Test set results
 y_pred_linear = chosen_model.predict(X_test)
@@ -73,15 +73,11 @@ y_pred_lasso = lasso_model.predict(X_test)
 y_pred_elastic = elastic_model.predict(X_test)
 
 #accuracy testing
-
-evaluate_model(estimator= , X_test, y_test)
-
-#MAE
 print(f"mean_absolute_error linear: {mean_absolute_error(y_test, y_pred_linear)}")
 print(f"mean_absolute_error ridge:  {mean_absolute_error(y_test, y_pred_ridge)}")
 print(f"mean_absolute_error lasso:  {mean_absolute_error(y_test, y_pred_lasso)}")
 print(f"mean_absolute_error net elastic: {mean_absolute_error(y_test, y_pred_elastic)}")
-
+#ridge regression rives the smalles absolute error
 
 
 
@@ -99,18 +95,16 @@ print(f"mean_absolute_error net elastic: {mean_absolute_error(y_test, y_pred_ela
 #parameters = dict(ridge__alpha = [200, 230, 250,265, 270, 275, 290, 300, 500] ,ridge__normalize = normalize, ridge__solver = solver)
 #search_ridge = GridSearchCV(ridge_model, param_grid = parameters, cv = 5, scoring = 'accuracy' )
 
-
-#ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265, 270, 275, 290, 300, 500 ]}
 #lasso_params = {'alpha':[0.02, 0.024, 0.025, 0.026, 0.03]}
 
-
-#searchh = GridSearchCV(Ridge() , param_grid = ridge_params)
-#searchh.fit(X_train, y_train).best_estimator_
 
 
 
 #Hyper-parameter Tuning
-
+#ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265, 270, 275, 290, 300, 500 ]}
+#search = GridSearchCV(Ridge() , param_grid = ridge_params, cv = 5)
+#best_model = search.fit(X_train, y_train)
+#print(best_model.best_estimator_)
 
 
 #Early Stopping
