@@ -9,7 +9,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
-from sklearn.linear_model import LinearRegression, Ridge, Lasso
+from sklearn.linear_model import LinearRegression, Ridge, Lasso, RidgeCV, LassoCV, LassoLarsCV
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.compose import ColumnTransformer, make_column_transformer
 from sklearn.pipeline import make_pipeline
@@ -46,6 +46,13 @@ imputer = SimpleImputer(
 
 X_train = imputer.fit_transform(X_train)
 
+#looking at data
+plt.scatter(all_data[target_column], all_data.drop(columns=target_column)['Garage Area'])
+save_fig("graphs/garagearea")
+plt.scatter(all_data[target_column], all_data.drop(columns=target_column)['Overall Qual'])
+save_fig("graphs/overallquality")
+plt.scatter(all_data[target_column], all_data.drop(columns=target_column)["Total Bsmt SF"])
+save_fig("graphs/totalbsmtsf")
 #models
 chosen_model = LinearRegression()
 ridge_model = Ridge()
@@ -124,16 +131,24 @@ save_fig("graphs/lasso_model")
 sns.distplot(y_test-prediction_elastic).set_title('elastic model')
 save_fig("graphs/elastic_model")
 
-
 plt.scatter(X_train, y_train)
 save_fig("graphs/scatter training")
 
 #Early Stopping
+alphas = [1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20,
+                         200, 230, 250, 265, 270, 275, 290, 300, 500 ]
+cv_ridge = [rmse_cv(Ridge(alpha = alpha)).mean()
+            for alpha in alphas]
+cv_ridge = pd.Series(cv_ridge, index = alphas)
+cv_ridge.plot(title = "Validation - Just Do It")
+plt.xlabel("alpha")
+plt.ylabel("rmse")
+save_fig('graphs/validation_ridge')
+
 
 #Interpreting Learning Curves
 #RidgeRegression = Ridge(alpha= 5, fit_intercept= True, solver= 'svd')
 #plot_learning_curves(RidgeRegression, X_test, y_test)
 #save_fig("graphs/learningcurve_ridge")
-
 
 

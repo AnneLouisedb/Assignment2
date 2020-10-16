@@ -1,4 +1,4 @@
-from modelling import chosen_model
+from modelling import chosen_model, ridge_model
 
 data_dir = Path("data/")
 all_data = pd.read_csv(data_dir / "housing-data.csv", index_col="Order")
