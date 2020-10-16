@@ -8,11 +8,12 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
-from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.compose import ColumnTransformer, make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import ElasticNet
 
 
 data_dir = Path("data/")
@@ -43,15 +44,20 @@ linear_model = LinearRegression()
 
 chosen_model = Pipeline([("imputer", imputer), ("model", linear_model)])
 ridge_model = Pipeline([("imputer", imputer), ("ridge.model", Ridge())])
+lasso_model = Pipeline([("imputer", imputer), ("ridge.model", Lasso())])
+elastic_model = Pipeline([("imputer", imputer), ("ridge.model", ElasticNet())])
 #lasso_model = ...
 #Fitting regressors to the training set
 chosen_model.fit(X_train, y_train)
 ridge_model.fit(X_train, y_train)
-#lasso_model.fit(X_train), y_train)
+lasso_model.fit(X_train, y_train)
+elastic_model.fit(X_train, y_train)
 
 #predicting the Test set results
-
-
+y_pred_linear = chosen_model.predict(X_test)
+y_pred_ridge = ridge_model.predict(X_test)
+y_pred_lasso = lasso_model.predict(X_test)
+y_pred_elastic = elastic_model.predict(X_test)
 
 #linear_model.fit(imputer.transform(X_train), y_train)
 #y_pred = linear_model.predict(imputer.transform(X_test))
