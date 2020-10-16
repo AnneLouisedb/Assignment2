@@ -1,6 +1,7 @@
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
@@ -71,6 +72,7 @@ print(f"mean_absolute_error linear: {mean_absolute_error(y_test, y_pred_linear)}
 print(f"mean_absolute_error ridge:  {mean_absolute_error(y_test, y_pred_ridge)}")
 print(f"mean_absolute_error lasso:  {mean_absolute_error(y_test, y_pred_lasso)}")
 print(f"mean_absolute_error net elastic: {mean_absolute_error(y_test, y_pred_elastic)}")
+
 #ridge regression rives the smallest absolute error
 
 
@@ -97,11 +99,9 @@ print(lasso_regressor.best_score_)
 prediction_lasso = lasso_regressor.predict(X_test)
 prediction_ridge = ridge_regressor.predict(X_test)
 
-sns.distplot(y_test-prediction_ridge)
-sns.distplot(y_test-prediction_lasso)
+sns.distplot(y_test-prediction_ridge).set_title('ridge model')
 
-
-
+sns.distplot(y_test-prediction_lasso).set_title('lasso model')
 
 
 #Create list of parameters for Ridge Regression
