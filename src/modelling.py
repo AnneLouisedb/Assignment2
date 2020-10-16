@@ -99,10 +99,12 @@ lasso_regressor.fit(X_train,y_train)
 print(lasso_regressor.best_params_)
 print(lasso_regressor.best_score_)
 
+#prediction
+prediction_lasso = lasso_regressor.predict(X_test)
+prediction_ridge = ridge_regressor.predict(X_test)
 
-
-
-
+sns.distplot(y_test-prediction_ridge)
+sns.distplot(y_test-prediction_lasso)
 #Learning curves
 
 #Create list of parameters for Ridge Regression
