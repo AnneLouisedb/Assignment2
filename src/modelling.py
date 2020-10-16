@@ -87,13 +87,17 @@ print(mean_mse)
 
 #Ridge Regressor L1
 ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265, 270, 275, 290, 300, 500 ]}
-ridge_regressor = GridSearchCV(ridge_model, ridge_params, scoring = 'neg_mean_squared_error', cv=5 )
-ridge_regressor.fit(X_train, y_train)
-print(ridge_regressor.best_params_)
-print(ridge_regressor.best_score_)
+#ridge_regressor = GridSearchCV(ridge_model, ridge_params, scoring = 'neg_mean_squared_error', cv=5 )
+#ridge_regressor.fit(X_train, y_train)
+#print(ridge_regressor.best_params_)
+#print(ridge_regressor.best_score_)
 
-
-
+#Lasso Regressor L2
+lasso_params = {'alpha':[0.02, 0.024, 0.025, 0.026, 0.03]}
+lasso_regressor = GridSearchCV(lasso_model, lasso_params, scoring = 'neg_mean_squared_error', cv=5 )
+lasso_regressor.fit(X_train,y_train)
+print(lasso_regressor.best_params_)
+print(lasso_regressor.best_score_)
 
 
 
@@ -107,7 +111,6 @@ print(ridge_regressor.best_score_)
 #parameters = dict(ridge__alpha = [200, 230, 250,265, 270, 275, 290, 300, 500] ,ridge__normalize = normalize, ridge__solver = solver)
 #search_ridge = GridSearchCV(ridge_model, param_grid = parameters, cv = 5, scoring = 'accuracy' )
 
-#lasso_params = {'alpha':[0.02, 0.024, 0.025, 0.026, 0.03]}
 
 
 
