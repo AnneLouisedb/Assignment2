@@ -16,7 +16,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV, cross_val_score, cross_val_predict
 from sklearn.linear_model import ElasticNet, SGDRegressor
 from copy import deepcopy
-from src.extra_functions import plot_model, plot_learning_curves
+from src.extra_functions import plot_model, plot_learning_curves, save_fig
 
 data_dir = Path("data/")
 img_dir = Path("../img")
@@ -100,8 +100,9 @@ prediction_lasso = lasso_regressor.predict(X_test)
 prediction_ridge = ridge_regressor.predict(X_test)
 
 sns.distplot(y_test-prediction_ridge).set_title('ridge model')
-
+save_fig("graphs/ridge_model")
 sns.distplot(y_test-prediction_lasso).set_title('lasso model')
+save_fig("graphs/lasso_model")
 
 
 #Create list of parameters for Ridge Regression
