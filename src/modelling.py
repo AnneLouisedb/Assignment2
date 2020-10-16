@@ -42,9 +42,6 @@ imputer = SimpleImputer(
 )
 scaler = StandardScaler()
 linear_model = LinearRegression()
-lasso = Lasso(random_state=0, max_iter=10000)
-alphas = np.logspace(-4, -0.5, 30)
-tuned_parameters = [{'alpha': alphas}]
 
 chosen_model = Pipeline(steps = [("imputer", imputer), ("scale", scaler), ("model", linear_model)])
 ridge_model = Pipeline(steps = [("imputer", imputer), ("scale", scaler), ("ridge.model", Ridge())])
@@ -71,11 +68,12 @@ print(f"mean_absolute_error net elastic:  {mean_absolute_error(y_test, y_pred_el
 
 
 
+
 #Create list of parameters for Ridge Regression
-#normalize = [True, False]
-#solver = ['auto', 'svd', 'cholesky', 'Isqr', 'sparse_cg','sag','saga' ]
-#parameters = dict('ridge__normalize' : normalize, 'ridge__solver' : solver)
-#search_ridge = GridSearchCV(ridge_model, parameters)
+normalize = [True, False]
+solver = ['auto', 'svd', 'cholesky', 'Isqr', 'sparse_cg','sag','saga' ]
+parameters = dict(ridge__normalize = normalize, ridge__solver = solver)
+search_ridge = GridSearchCV(ridge_model, param_grid = parameters, cv = 5, scoring = 'accuracy' )
 
 #best estimator
 #search_ridge.fit(X_train, y_train)
