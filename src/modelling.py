@@ -41,12 +41,15 @@ imputer = SimpleImputer(
     missing_values=np.nan, strategy="constant", fill_value=0
 )
 linear_model = LinearRegression()
+lasso = Lasso(random_state=0, max_iter=10000)
+alphas = np.logspace(-4, -0.5, 30)
+tuned_parameters = [{'alpha': alphas}]
 
-chosen_model = Pipeline([("imputer", imputer), ("model", linear_model)])
-ridge_model = Pipeline([("imputer", imputer), ("ridge.model", Ridge())])
-lasso_model = Pipeline([("imputer", imputer), ("ridge.model", Lasso())])
-elastic_model = Pipeline([("imputer", imputer), ("ridge.model", ElasticNet())])
-#lasso_model = ...
+chosen_model = Pipeline(steps = [("imputer", imputer), ("model", linear_model)])
+ridge_model = Pipeline(steps = [("imputer", imputer), ("ridge.model", Ridge())])
+lasso_model = Pipeline(steps =[("imputer", imputer), ("ridge.model", Lasso())])
+elastic_model = Pipeline(steps = [("imputer", imputer), ("ridge.model", ElasticNet())])
+
 #Fitting regressors to the training set
 chosen_model.fit(X_train, y_train)
 ridge_model.fit(X_train, y_train)
@@ -59,12 +62,30 @@ y_pred_ridge = ridge_model.predict(X_test)
 y_pred_lasso = lasso_model.predict(X_test)
 y_pred_elastic = elastic_model.predict(X_test)
 
-#linear_model.fit(imputer.transform(X_train), y_train)
-#y_pred = linear_model.predict(imputer.transform(X_test))
-#print(mean_absolute_error(y_test, y_pred))
+print(f"mean_absolute_error linear: {mean_absolute_error(y_test, y_pred_linear)}")
+print(f"mean_absolute_error ridge:  {mean_absolute_error(y_test, y_pred_ridge)}")
+print(f"mean_absolute_error lasso:  {mean_absolute_error(y_test, y_pred_lasso)}")
+print(f"mean_absolute_error net elastic:  {mean_absolute_error(y_test, y_pred_elastic)}")
 
-#Regularisation, L1 (Lasso) and L2 (Ridge)
+#plotting
 
+#List of a sequece of integers form 1 to 30
+
+#Create list of parameters for Ridge Regression
+normalize = [True, False]
+solver = ['auto', 'svd', 'cholesky', 'Isqr', 'sparse_cg','sag','saga' ]
+parameters = {'ridge__normalize' : normalize, 'ridge__solver' : solver}
+clf = GridSearchCV(ridge_model, parameters)
+
+#best estimator
+clf.fit(X_train, y_train)
+print(clf.best_estimator_)
+#best model
+#best_model_ridge = clf.best_estimator_
+#best_model_ridge.fit(X_test, y_test)
+
+#view the best parameters
+print(...)
 
 #Hyper-parameter Tuning
 
