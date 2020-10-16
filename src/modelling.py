@@ -85,6 +85,15 @@ mse = cross_val_score(chosen_model, X_train, y_train, scoring = 'neg_mean_square
 mean_mse = np.mean(mse)
 print(mean_mse)
 
+#Ridge Regressor L1
+ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265, 270, 275, 290, 300, 500 ]}
+ridge_regressor = GridSearchCV(ridge_model, ridge_params, scoring = 'neg_mean_squared_error', cv=5 )
+ridge_regressor.fit(X_train, y_train)
+print(ridge_regressor.best_params_)
+print(ridge_regressor.best_score_)
+
+
+
 
 
 
@@ -104,10 +113,6 @@ print(mean_mse)
 
 
 #Hyper-parameter Tuning
-#ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265, 270, 275, 290, 300, 500 ]}
-#search = GridSearchCV(Ridge() , param_grid = ridge_params, cv = 5)
-#best_model = search.fit(X_train, y_train)
-#print(best_model.best_estimator_)
 
 
 #Early Stopping
