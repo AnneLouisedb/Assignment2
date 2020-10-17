@@ -102,16 +102,17 @@ plt.xlabel("Bedroom AbvGr", fontsize = 18)
 plt.savefig("graphs/Bedroom_AbvGr")
 
 # format training data
-xTrain_garage = X_train['GarageArea'].values.reshape(-1,1)
-yTrain_garage = y_train.values.reshape(-1,1)
+xTraingarage = X_train['Garage Area'].values.reshape(-1,1)
+yTraingarage = y_train.values.reshape(-1,1)
 
 # Transform the input features, without regularization
 Poly = PolynomialFeatures(degree = 10, include_bias = False)
-xTrainPoly = Poly.fit_transform(xTrain_garage)
+xTrainPoly = Poly.fit_transform(xTraingarage)
 
 # standardization
 xTrainPolyStan = scaler.fit_transform(xTrainPoly)
-print(scaler.scale_, scaler.mean_)
+# scaler.scale_, scaler.mean_
+
 
 #models
 chosen_model = LinearRegression()
@@ -119,17 +120,23 @@ ridge_model = Ridge()
 lasso_model = Lasso()
 elastic_model = ElasticNet()
 
-
 #list of models
 models = [chosen_model, ridge_model, lasso_model, elastic_model]
 pipe_dict = {0: 'linear regression', 1: 'Ridge', 2: 'Lasso', 3: 'NetElastic'}
 
-#train models
-for model in models:
-    model.fit(X_train, y_train)
+#fit model to polynomial
+chosen_model.fit(xTrainPolyStan, yTrain)
+ridge_model.fit(xTrainPolyStan, yTrain)
+lasso_model.fit(xTrainPolyStan, yTrain)
+elastic_model.fit(xTrainPolyStan, yTrain)
 
-for i, model in enumerate(models):
-    print('{} Test Accuracy: {}'.format(pipe_dict[i],model.predict(X_test)))
+
+#train models
+#for model in models:
+ #   model.fit(X_train, y_train)
+
+#for i, model in enumerate(models):
+ #   print('{} Test Accuracy: {}'.format(pipe_dict[i],model.predict(X_test)))
 
 #make predictions on the test set
 y_pred_linear = chosen_model.predict(X_test)
