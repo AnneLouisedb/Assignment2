@@ -125,10 +125,22 @@ models = [chosen_model, ridge_model, lasso_model, elastic_model]
 pipe_dict = {0: 'linear regression', 1: 'Ridge', 2: 'Lasso', 3: 'NetElastic'}
 
 #fit model to polynomial
-chosen_model.fit(xTrainPolyStan, yTrain)
-ridge_model.fit(xTrainPolyStan, yTrain)
-lasso_model.fit(xTrainPolyStan, yTrain)
-elastic_model.fit(xTrainPolyStan, yTrain)
+chosen_model.fit(xTrainPolyStan, yTraingarage)
+ridge_model.fit(xTrainPolyStan, yTraingarage)
+lasso_model.fit(xTrainPolyStan, yTraingarage)
+elastic_model.fit(xTrainPolyStan, yTraingarage)
+
+#predict linear model
+xFit = np.linspace(0,1500,num=200).reshape(-1,1)
+xFitPoly = Poly.transform(xFit)
+xFitPolyStan = scaler.transform(xFitPoly)
+
+yFit_linear = chosen_model.predict(xFitPolyStan)
+yFit_ridge = ridge_model.predict(xFitPolyStan)
+yFit_lasso = lasso_model.predict(xFitPolyStan)
+yFit_elastic = elastic_model.predict(xFitPolyStan)
+
+
 
 
 #train models
