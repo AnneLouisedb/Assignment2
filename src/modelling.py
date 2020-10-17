@@ -49,22 +49,22 @@ scaler = StandardScaler()
 #pipeline = Pipeline(steps = [("imp", imputer) , ('standard', scaler)])
 
 # Preprocessing for categorical data
-categorical_transformer = Pipeline(steps=[
-    ('onehot', OneHotEncoder(handle_unknown='ignore')),
-])
+#categorical_transformer = Pipeline(steps=[
+ #   ('onehot', OneHotEncoder(handle_unknown='ignore')),
+#])
 
 # Preprocessing for numerical data
-numeric_transformer = Pipeline(steps=[
-    ('imputer', imputer),
-    ('scaler', scaler),
-])
+#numeric_transformer = Pipeline(steps=[
+ #   ('imputer', imputer),
+  #  ('scaler', scaler),
+#])
 # Bundle preprocessing for numerical and categorical data
-preprocessor = ColumnTransformer(
-    transformers=[
-        ('num', numeric_transformer, numeric_features),
-        ('cat', categorical_transformer, categorical_features)
-    ]
-)
+#preprocessor = ColumnTransformer(
+ #   transformers=[
+  #      ('num', numeric_transformer, numeric_features),
+   #     ('cat', categorical_transformer, categorical_features)
+   # ]
+#)
 #pipeline.fit(X_train["Lot Area"])
 #pipeline.fit(X_train["Overall Qual"])
 #pipeline.fit(X_train["Total Bsmt SF"])
@@ -74,28 +74,31 @@ preprocessor = ColumnTransformer(
 
 
 #looking at data
+plt.figure()
 plt.scatter(X_train['Overall Qual'], y_train)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Overall Quality', fontsize = 18)
 plt.savefig("graphs/OverallQual")
 
-
+plt.figure()
 plt.scatter(X_train["Total Bsmt SF"], y_train)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('total Bsmt (square feet)', fontsize = 18)
 plt.savefig("graphs/Total_Bsmt_SF")
 
-
+plt.figure()
 plt.scatter(X_train['Garage Area'], y_train)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Garage Area (square feet)', fontsize = 18)
 plt.savefig("graphs/garage_area")
 
+plt.figure()
 plt.scatter(X_train["Lot Area"], y_train)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Lot Area (square feet)', fontsize = 18)
 plt.savefig("graphs/lot_area")
 
+plt.figure()
 plt.scatter(X_train["Bedroom AbvGr"], y_train)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel("Bedroom AbvGr", fontsize = 18)
@@ -140,15 +143,14 @@ yFit_ridge = ridge_model.predict(xFitPolyStan)
 yFit_lasso = lasso_model.predict(xFitPolyStan)
 yFit_elastic = elastic_model.predict(xFitPolyStan)
 
+#plot results linear model (chosen_model)
+plt.plot(xFit,yFit_linear, lw=3, color='r', zorder = 2)
+plt.scatter(X_train['Garage Area'], y_train)
+plt.ylabel('Sale Price (dollars)', fontsize = 18)
+plt.xlabel('Garage Area (square feet)', fontsize = 18)
+plt.savefig("graphs/linear_garage_area")
 
 
-
-#train models
-#for model in models:
- #   model.fit(X_train, y_train)
-
-#for i, model in enumerate(models):
- #   print('{} Test Accuracy: {}'.format(pipe_dict[i],model.predict(X_test)))
 
 #make predictions on the test set
 y_pred_linear = chosen_model.predict(X_test)
