@@ -43,8 +43,36 @@ X_test = X_test[columns_to_use]
 imputer = SimpleImputer(
     missing_values=np.nan, strategy="constant", fill_value=0
 )
+scaler = StandardScaler()
 
-X_train = imputer.fit_transform(X_train)
+
+new = StandardScaler().fit_transform(X_train)
+#pipeline = Pipeline(steps = [("imp", imputer) , ('standard', scaler)])
+
+# Preprocessing for categorical data
+categorical_transformer = Pipeline(steps=[
+    ('onehot', OneHotEncoder(handle_unknown='ignore')),
+])
+
+# Preprocessing for numerical data
+numeric_transformer = Pipeline(steps=[
+    ('imputer', imputer),
+    ('scaler', scaler),
+])
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numeric_transformer, numeric_features),
+        ('cat', categorical_transformer, categorical_features)
+    ]
+)
+#pipeline.fit(X_train["Lot Area"])
+#pipeline.fit(X_train["Overall Qual"])
+#pipeline.fit(X_train["Total Bsmt SF"])
+#pipeline.fit(X_train["Garage Area"])
+#pipeline.fit(X_train["Bedroom AbvGr"])
+
+
 
 #looking at data
 plt.figure()
@@ -65,16 +93,17 @@ elastic_model = ElasticNet()
 
 
 #list of models
-pipelines = [chosen_model, ridge_model, lasso_model, elastic_model]
+models = [chosen_model, ridge_model, lasso_model, elastic_model]
 pipe_dict = {0: 'linear regression', 1: 'Ridge', 2: 'Lasso', 3: 'NetElastic'}
 
-for pipe in pipelines:
-    pipe.fit(X_train, y_train)
+#train models
+for model in models:
+    model.fit(X_train, y_train)
 
-for i, model in enumerate(pipelines):
+for i, model in enumerate(models):
     print('{} Test Accuracy: {}'.format(pipe_dict[i],model.predict(X_test)))
 
-#predicting the Test set results
+#make predictions on the test set
 y_pred_linear = chosen_model.predict(X_test)
 y_pred_ridge = ridge_model.predict(X_test)
 y_pred_lasso = lasso_model.predict(X_test)
@@ -129,6 +158,7 @@ print(elastic_regressor.best_score_)
 prediction_lasso = lasso_regressor.predict(X_test)
 prediction_ridge = ridge_regressor.predict(X_test)
 prediction_elastic = elastic_regressor.predict(X_test)
+
 plt.figure()
 sns.distplot(y_test-prediction_ridge).set_title('ridge model')
 plt.savefig("graphs/ridge_model")
@@ -143,18 +173,10 @@ plt.scatter(X_train, y_train)
 plt.savefig("graphs/scatter training")
 
 #Early Stopping
-alphas = [1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20,
-                         200, 230, 250, 265, 270, 275, 290, 300, 500 ]
-cv_ridge = [rmse_cv(Ridge(alpha = alpha)).mean()
-            for alpha in alphas]
-cv_ridge = pd.Series(cv_ridge, index = alphas)
-cv_ridge.plot(title = "Validation - Just Do It")
-plt.xlabel("alpha")
-plt.ylabel("rmse")
-plt.savefig('graphs/validation_ridge')
 
 
 #Interpreting Learning Curves
+
 #RidgeRegression = Ridge(alpha= 5, fit_intercept= True, solver= 'svd')
 #plot_learning_curves(RidgeRegression, X_test, y_test)
 #save_fig("graphs/learningcurve_ridge")
