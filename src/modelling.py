@@ -43,8 +43,7 @@ X_test = X_test[columns_to_use]
 
 #functions in preprocessor
 imputer = SimpleImputer(
-    missing_values=np.nan, strategy="constant", fill_value=0
-)
+    missing_values=np.nan, strategy="constant", fill_value=0)
 scaler = StandardScaler()
 
 #pipeline = Pipeline(steps = [("imp", imputer) , ('standard', scaler)])
@@ -102,9 +101,17 @@ plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel("Bedroom AbvGr", fontsize = 18)
 plt.savefig("graphs/Bedroom_AbvGr")
 
+# format training data
+xTrain_garage = X_train['GarageArea'].values.reshape(-1,1)
+yTrain_garage = y_train.values.reshape(-1,1)
+
 # Transform the input features, without regularization
 Poly = PolynomialFeatures(degree = 10, include_bias = False)
-xTrainPoly = Poly.fit_transform(X_train)
+xTrainPoly = Poly.fit_transform(xTrain_garage)
+
+# standardization
+xTrainPolyStan = scaler.fit_transform(xTrainPoly)
+print(scaler.scale_, scaler.mean_)
 
 #models
 chosen_model = LinearRegression()
