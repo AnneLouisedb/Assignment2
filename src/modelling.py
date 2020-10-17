@@ -10,7 +10,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, RidgeCV, LassoCV, LassoLarsCV
-from sklearn.preprocessing import PolynomialFeatures, StandardScaler
+from sklearn.preprocessing import PolynomialFeatures, StandardScaler, MinMaxScaler
 from sklearn.compose import ColumnTransformer, make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV, cross_val_score, cross_val_predict
@@ -41,10 +41,11 @@ X_train, X_test, y_train, y_test = train_test_split(
 X_train = X_train[columns_to_use]
 X_test = X_test[columns_to_use]
 
+
 #functions in preprocessor
 imputer = SimpleImputer(
     missing_values=np.nan, strategy="constant", fill_value=0)
-scaler = StandardScaler()
+scaler = MinMaxScaler()
 
 #pipeline = Pipeline(steps = [("imp", imputer) , ('standard', scaler)])
 
@@ -110,7 +111,7 @@ yTraingarage = y_train.values.reshape(-1,1)
 
 # Transform the input features, without regularization
 Poly = PolynomialFeatures(degree = 10, include_bias = False)
-xTrainPoly = Poly.fit_transform(xTraingarage)
+xTrainPoly = Poly.fit_transform(xTraingarage) ##fill empty values!!
 
 # standardization
 xTrainPolyStan = scaler.fit_transform(xTrainPoly)
@@ -122,10 +123,6 @@ chosen_model = LinearRegression()
 ridge_model = Ridge()
 lasso_model = Lasso()
 elastic_model = ElasticNet()
-
-#list of models
-models = [chosen_model, ridge_model, lasso_model, elastic_model]
-pipe_dict = {0: 'linear regression', 1: 'Ridge', 2: 'Lasso', 3: 'NetElastic'}
 
 #fit model to polynomial
 chosen_model.fit(xTrainPolyStan, yTraingarage)
@@ -150,8 +147,6 @@ plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Garage Area (square feet)', fontsize = 18)
 plt.savefig("graphs/linear_garage_area")
 
-
-
 #make predictions on the test set
 y_pred_linear = chosen_model.predict(X_test)
 y_pred_ridge = ridge_model.predict(X_test)
@@ -164,11 +159,30 @@ print(f"mean_absolute_error ridge:  {mean_absolute_error(y_test, y_pred_ridge)}"
 print(f"mean_absolute_error lasso:  {mean_absolute_error(y_test, y_pred_lasso)}")
 print(f"mean_absolute_error net elastic: {mean_absolute_error(y_test, y_pred_elastic)}")
 
-#plot predicted values
-plt.figure()
-plt.scatter(y_test, y_pred_ridge)
-plt.savefig("graphs/ridge_predictedvalues")
-#Hyper-parameter Tuning
+#Ridge Regression on Garage Area
+i = 0
+ls = ['-', '--', ':']
+color = ['r', 'g', 'orange']
+
+for a in [0, 2, 2000]:
+    ridgeReg = Ridge(alpha=a)
+    ridgeReg.fit(xTrainPolyStan, y_train)
+
+    # predict
+    xFit2 = np.linspace(0, 1500, num=200).reshape(-1, 1)
+    xFitPoly2 = Poly.transform(xFit2)
+    xFitPolyStan2 = scaler.transform(xFitPoly2)
+    yFit2 = ridgeReg.predict(xFitPolyStan2)
+
+    # plot
+    plt.figure()
+    plt.plot(xFit2, yFit2, lw=3, color=color[i], zorder=2, label="alpha = " + str(a), linestyle=ls[i])
+    i = i + 1
+    plt.scatter(X_train['Garage Area'], y_train, marker='o', color='b', linestyle='', zorder=1)
+    plt.ylabel('Sale Price (dollars)', fontsize = 18)
+    plt.xlabel('Garage Area (square feet)', fontsize = 18)
+    plt.savefig("graphs/ridge_garage_area")
+
 
 #Linear Model
 mse = cross_val_score(chosen_model, X_train, y_train, scoring = 'neg_mean_squared_error', cv=5)
@@ -211,12 +225,15 @@ prediction_elastic = elastic_regressor.predict(X_test)
 plt.figure()
 sns.distplot(y_test-prediction_ridge).set_title('ridge model')
 plt.savefig("graphs/ridge_model")
+
 plt.figure()
 sns.distplot(y_test-prediction_lasso).set_title('lasso model')
 plt.savefig("graphs/lasso_model")
+
 plt.figure()
 sns.distplot(y_test-prediction_elastic).set_title('elastic model')
 plt.savefig("graphs/elastic_model")
+
 plt.figure()
 plt.scatter(X_train, y_train)
 plt.savefig("graphs/scatter training")
