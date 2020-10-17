@@ -33,6 +33,7 @@ columns_to_use = [
 all_data = pd.read_csv(data_dir / "housing-data.csv", index_col="Order")
 target_column = "SalePrice"
 
+#splitting data
 X_train, X_test, y_train, y_test = train_test_split(
     all_data.drop(columns=target_column), all_data[target_column]
 )
@@ -40,13 +41,12 @@ X_train, X_test, y_train, y_test = train_test_split(
 X_train = X_train[columns_to_use]
 X_test = X_test[columns_to_use]
 
+#functions in preprocessor
 imputer = SimpleImputer(
     missing_values=np.nan, strategy="constant", fill_value=0
 )
 scaler = StandardScaler()
 
-
-new = StandardScaler().fit_transform(X_train)
 #pipeline = Pipeline(steps = [("imp", imputer) , ('standard', scaler)])
 
 # Preprocessing for categorical data
@@ -84,6 +84,13 @@ plt.savefig("graphs/overallquality")
 plt.figure()
 plt.scatter(all_data[target_column], all_data.drop(columns=target_column)["Total Bsmt SF"])
 plt.savefig("graphs/totalbsmtsf")
+
+plt.plot(X_train['Garage Area'], y_train)
+plt.ylabel('Sale Price (dollars)', fontsize = 18)
+plt.xlabel('Garage Area (suqare feet)', fontsize = 18)
+plt.show()
+
+
 
 #models
 chosen_model = LinearRegression()
