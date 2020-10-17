@@ -59,7 +59,7 @@ numeric_transformer = Pipeline(steps=[
     ('imputer', imputer),
     ('scaler', scaler),
 ])
-
+# Bundle preprocessing for numerical and categorical data
 preprocessor = ColumnTransformer(
     transformers=[
         ('num', numeric_transformer, numeric_features),
