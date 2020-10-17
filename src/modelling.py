@@ -75,22 +75,30 @@ preprocessor = ColumnTransformer(
 
 
 #looking at data
-plt.figure()
-plt.scatter(all_data[target_column], all_data.drop(columns=target_column)['Garage Area'])
-plt.savefig("graphs/garagearea")
-plt.figure()
-plt.scatter(all_data[target_column], all_data.drop(columns=target_column)['Overall Qual'])
-plt.savefig("graphs/overallquality")
-plt.figure()
-plt.scatter(all_data[target_column], all_data.drop(columns=target_column)["Total Bsmt SF"])
-plt.savefig("graphs/totalbsmtsf")
-
-plt.plot(X_train['Garage Area'], y_train)
+plt.scatter(X_train['Overall Qual'], y_train)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
-plt.xlabel('Garage Area (suqare feet)', fontsize = 18)
+plt.xlabel('Overall Quality', fontsize = 18)
+plt.savefig("graphs/OverallQual")
+plt.show()
+
+plt.scatter(X_train["Total Bsmt SF"], y_train)
+plt.ylabel('Sale Price (dollars)', fontsize = 18)
+plt.xlabel('total Bsmt (square feet)', fontsize = 18)
+plt.savefig("graphs/Total_Bsmt_SF")
+plt.show()
+
+plt.scatter(X_train['Garage Area'], y_train)
+plt.ylabel('Sale Price (dollars)', fontsize = 18)
+plt.xlabel('Garage Area (square feet)', fontsize = 18)
+plt.savefig("graphs/garage_area")
 plt.show()
 
 
+plt.scatter(X_train["Lot Area"], y_train)
+plt.ylabel('Sale Price (dollars)', fontsize = 18)
+plt.xlabel('Lot Area (square feet)', fontsize = 18)
+plt.savefig("graphs/lot_area")
+plt.show()
 
 #models
 chosen_model = LinearRegression()
