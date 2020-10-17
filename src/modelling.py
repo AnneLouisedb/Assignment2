@@ -79,26 +79,32 @@ plt.scatter(X_train['Overall Qual'], y_train)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Overall Quality', fontsize = 18)
 plt.savefig("graphs/OverallQual")
-plt.show()
+
 
 plt.scatter(X_train["Total Bsmt SF"], y_train)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('total Bsmt (square feet)', fontsize = 18)
 plt.savefig("graphs/Total_Bsmt_SF")
-plt.show()
+
 
 plt.scatter(X_train['Garage Area'], y_train)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Garage Area (square feet)', fontsize = 18)
 plt.savefig("graphs/garage_area")
-plt.show()
-
 
 plt.scatter(X_train["Lot Area"], y_train)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Lot Area (square feet)', fontsize = 18)
 plt.savefig("graphs/lot_area")
-plt.show()
+
+plt.scatter(X_train["Bedroom AbvGr"], y_train)
+plt.ylabel('Sale Price (dollars)', fontsize = 18)
+plt.xlabel("Bedroom AbvGr", fontsize = 18)
+plt.savefig("graphs/Bedroom_AbvGr")
+
+# Transform the input features, without regularization
+Poly = PolynomialFeatures(degree = 10, include_bias = False)
+xTrainPoly = Poly.fit_transform(X_train)
 
 #models
 chosen_model = LinearRegression()
