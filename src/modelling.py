@@ -174,7 +174,7 @@ for a in [0, 2, 2000]:
     xFitPolyStan2 = scaler.transform(xFitPoly2)
     yFit2 = ridgeReg.predict(xFitPolyStan2)
 
-    # plot
+    # plot ridge - garage area
     plt.figure()
     plt.plot(xFit2, yFit2, lw=3, color=color[i], zorder=2, label="alpha = " + str(a), linestyle=ls[i])
     i = i + 1
@@ -184,20 +184,25 @@ for a in [0, 2, 2000]:
     plt.savefig("graphs/ridge_garage_area")
 
 
-#Linear Model
-mse = cross_val_score(chosen_model, X_train, y_train, scoring = 'neg_mean_squared_error', cv=5)
-mean_mse = np.mean(mse)
-print(mean_mse)
-
 #Ridge Regressor L1
 ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20,
                          200, 230, 250, 265, 270, 275, 290, 300, 500 ],
                 "fit_intercept": [True, False],
                 "solver": ['svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']}
 ridge_regressor = GridSearchCV(ridge_model, ridge_params, scoring = 'neg_mean_squared_error', cv=5 )
-ridge_regressor.fit(X_train, y_train)
+ridge_regressor.fit(xTrainPolyStan, y_train)
 print(ridge_regressor.best_params_)
 print(ridge_regressor.best_score_)
+
+
+
+
+
+#Linear Model
+mse = cross_val_score(chosen_model, X_train, y_train, scoring = 'neg_mean_squared_error', cv=5)
+mean_mse = np.mean(mse)
+print(mean_mse)
+
 
 #Lasso Regressor L2
 lasso_params = {'alpha':[0.02, 0.024, 0.025, 0.026, 0.03],
