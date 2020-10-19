@@ -65,25 +65,15 @@ plt.figure()
 plt.plot(scaled_garage_area)
 plt.savefig("graphs/scaled_garage_area")
 
+print(all_data.isna().sum())
+for columns in columns_to_use:
+    all_data[columns] = all_data[columns].fillna(0)
+
+print(all_data.isna().sum())
 
 
-# Preprocessing for numerical data
-#numeric_transformer = Pipeline(steps=[
- #   ('imputer', imputer),
-  #  ('scaler', scaler),
-#])
-# Bundle preprocessing for numerical and categoricalΩ data
-#preprocessor = ColumnTransformer(
- #   transformers=[
-  #      ('num', numeric_transformer, numeric_features),
-   #     ('cat', categorical_transformer, categorical_features)
-   # ]
-#)
-#pipeline.fit(X_train["Lot Area"])
-#pipeline.fit(X_train["Overall Qual"])
-#pipeline.fit(X_train["Total Bsmt SF"])
-#pipeline.fit(X_train["Garage Area"])
-#pipeline.fit(X_train["Bedroom AbvGr"])
+
+
 
 
 
