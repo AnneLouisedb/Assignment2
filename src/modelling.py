@@ -118,7 +118,7 @@ plt.savefig("graphs/Bedroom_AbvGr")
 
 # format training data
 x_Traingarage = X_train['Garage Area'].values.reshape(-1,1)
-y_Traingarage = y_train.values.reshape(-1,1)
+y_Train_reshape = y_train.values.reshape(-1,1)
 
 pipe_garage_area = preprocess.fit(x_Traingarage)
 
@@ -127,41 +127,47 @@ Poly = PolynomialFeatures(degree = 10, include_bias = False)
 xTrainPoly = Poly.fit_transform(x_Traingarage)
 xTrainPolyscale = scaler.fit_transform(xTrainPoly)
 
-
 #models
-chosen_model = LinearRegression()
+reg_model = LinearRegression()
 ridge_model = Ridge()
 lasso_model = Lasso()
 elastic_model = ElasticNet()
 
-#fit model to polynomial
-chosen_model.fit(xTrainPolyscale, y_Traingarage)
-ridge_model.fit(xTrainPolyscale, y_Traingarage)
-lasso_model.fit(xTrainPolyscale, y_Traingarage)
-elastic_model.fit(xTrainPolyscale, y_Traingarage)
-
+#linear regression
+reg_model.fit(xTrainPolyscale, y_Train_reshape)
 #predict linear model
 xFit = np.linspace(0,1500,num=200).reshape(-1,1)
 xFitPoly = Poly.transform(xFit)
-xFitPolyStan = scaler.transform(xFitPoly)
+xFitPolyscale = scaler.transform(xFitPoly)
+yFit_reg = reg_model.predict(xFitPolyscale)
 
-yFit_linear = chosen_model.predict(xTrainPolyscale)
-yFit_ridge = ridge_model.predict(xTrainPolyscale)
-yFit_lasso = lasso_model.predict(xTrainPolyscale)
-yFit_elastic = elastic_model.predict(xTrainPolyscale)
-
-#plot results linear model (chosen_model)
-plt.plot(xFit,yFit_linear, lw=3, color='r', zorder = 2)
+#plot results linear model
+plt.figure()
+plt.plot(xFit,yFit_reg, lw=3, color='r', zorder = 2)
 plt.scatter(X_train['Garage Area'], y_train)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Garage Area (square feet)', fontsize = 18)
 plt.savefig("graphs/linear_garage_area")
 
+
+#fit model to polynomial
+#reg_model.fit(xTrainPolyscale, y_Traingarage)
+#ridge_model.fit(xTrainPolyscale, y_Traingarage)
+#lasso_model.fit(xTrainPolyscale, y_Traingarage)
+#elastic_model.fit(xTrainPolyscale, y_Traingarage)
+
+#predict
+#yFit_linear = reg_model.predict(xTrainPolyscale)
+#yFit_ridge = ridge_model.predict(xTrainPolyscale)
+#Fit_lasso = lasso_model.predict(xTrainPolyscale)
+#yFit_elastic = elastic_model.predict(xTrainPolyscale)
+
+
 #make predictions on the test set
-y_pred_linear = chosen_model.predict(X_test)
-y_pred_ridge = ridge_model.predict(X_test)
-y_pred_lasso = lasso_model.predict(X_test)
-y_pred_elastic = elastic_model.predict(X_test)
+#y_pred_linear = reg_model.predict(X_test)
+#y_pred_ridge = ridge_model.predict(X_test)
+#y_pred_lasso = lasso_model.predict(X_test)
+#y_pred_elastic = elastic_model.predict(X_test)
 
 
 #Ridge Regression on Garage Area
@@ -171,19 +177,20 @@ color = ['r', 'g', 'orange']
 
 for a in [0, 2, 2000]:
     ridgeReg = Ridge(alpha=a)
-    ridgeReg.fit(xTrainPolyStan, y_train)
+    ridgeReg.fit(xTrainPolyscale, y_train)
 
     # predict
     xFit2 = np.linspace(0, 1500, num=200).reshape(-1, 1)
     xFitPoly2 = Poly.transform(xFit2)
-    xFitPolyStan2 = scaler.transform(xFitPoly2)
-    yFit2 = ridgeReg.predict(xFitPolyStan2)
+    xFitPolyscale2 = scaler.transform(xFitPoly2)
+    yFit2 = ridgeReg.predict(xFitPolyscale2)
 
     # plot ridge - garage area
     plt.figure()
     plt.plot(xFit2, yFit2, lw=3, color=color[i], zorder=2, label="alpha = " + str(a), linestyle=ls[i])
     i = i + 1
-    plt.scatter(X_train['Garage Area'], y_train, marker='o', color='b', linestyle='', zorder=1)
+    plt.scatter(X_train['Garage Area'], y_train)
+    plt.plot(xFit, yFit_reg, lw=3, color='r', zorder=2)
     plt.ylabel('Sale Price (dollars)', fontsize = 18)
     plt.xlabel('Garage Area (square feet)', fontsize = 18)
     plt.savefig("graphs/ridge_garage_area")
@@ -247,15 +254,9 @@ plt.savefig("graphs/scatter training")
 
 
 
-
-
 #Early Stopping
-
 
 #Interpreting Learning Curves
 
-#RidgeRegression = Ridge(alpha= 5, fit_intercept= True, solver= 'svd')
-#plot_learning_curves(RidgeRegression, X_test, y_test)
-#save_fig("graphs/learningcurve_ridge")
 
 
