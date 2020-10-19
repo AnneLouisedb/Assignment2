@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import pandas as pd
+import scipy
+import sklearn
+from sklearn import preprocessing
+from sklearn.preprocessing import scale
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.impute import SimpleImputer
@@ -47,19 +51,28 @@ imputer = SimpleImputer(
     missing_values=np.nan, strategy="constant", fill_value=0)
 scaler = MinMaxScaler()
 
-#pipeline = Pipeline(steps = [("imp", imputer) , ('standard', scaler)])
+preprocess = Pipeline(steps = [("imp", imputer) , ('minmaxscale', scaler)])
 
-# Preprocessing for categorical data
-#categorical_transformer = Pipeline(steps=[
- #   ('onehot', OneHotEncoder(handle_unknown='ignore')),
-#])
+garage_area = all_data["Garage Area"]
+plt.figure()
+plt.plot(garage_area)
+plt.savefig("graphs/garagearea2")
+
+garage_area_matrix = garage_area.values.reshape(-1,1)
+scaled = preprocessing.MinMaxScaler()
+scaled_garage_area = scaled.fit_transform(garage_area_matrix)
+plt.figure()
+plt.plot(scaled_garage_area)
+plt.savefig("graphs/scaled_garage_area")
+
+
 
 # Preprocessing for numerical data
 #numeric_transformer = Pipeline(steps=[
  #   ('imputer', imputer),
   #  ('scaler', scaler),
 #])
-# Bundle preprocessing for numerical and categorical data
+# Bundle preprocessing for numerical and categoricalΩ data
 #preprocessor = ColumnTransformer(
  #   transformers=[
   #      ('num', numeric_transformer, numeric_features),
@@ -195,9 +208,6 @@ print(ridge_regressor.best_params_)
 print(ridge_regressor.best_score_)
 
 
-
-
-
 #Linear Model
 mse = cross_val_score(chosen_model, X_train, y_train, scoring = 'neg_mean_squared_error', cv=5)
 mean_mse = np.mean(mse)
@@ -242,6 +252,10 @@ plt.savefig("graphs/elastic_model")
 plt.figure()
 plt.scatter(X_train, y_train)
 plt.savefig("graphs/scatter training")
+
+
+
+
 
 #Early Stopping
 
