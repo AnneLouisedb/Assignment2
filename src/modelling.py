@@ -125,7 +125,7 @@ pipe_garage_area = preprocess.fit(x_Traingarage)
 # Transform the input features, without regularization
 Poly = PolynomialFeatures(degree = 10, include_bias = False)
 xTrainPoly = Poly.fit_transform(x_Traingarage)
-xTrainPolyStan = scaler.fit_transform(xTrainPoly)
+xTrainPolyscale = scaler.fit_transform(xTrainPoly)
 
 
 #models
@@ -135,20 +135,20 @@ lasso_model = Lasso()
 elastic_model = ElasticNet()
 
 #fit model to polynomial
-chosen_model.fit(xTrainPolyStan, y_Traingarage)
-ridge_model.fit(xTrainPolyStan, y_Traingarage)
-lasso_model.fit(xTrainPolyStan, y_Traingarage)
-elastic_model.fit(xTrainPolyStan, y_Traingarage)
+chosen_model.fit(xTrainPolyscale, y_Traingarage)
+ridge_model.fit(xTrainPolyscale, y_Traingarage)
+lasso_model.fit(xTrainPolyscale, y_Traingarage)
+elastic_model.fit(xTrainPolyscale, y_Traingarage)
 
 #predict linear model
 xFit = np.linspace(0,1500,num=200).reshape(-1,1)
 xFitPoly = Poly.transform(xFit)
 xFitPolyStan = scaler.transform(xFitPoly)
 
-yFit_linear = chosen_model.predict(xFitPolyStan)
-yFit_ridge = ridge_model.predict(xFitPolyStan)
-yFit_lasso = lasso_model.predict(xFitPolyStan)
-yFit_elastic = elastic_model.predict(xFitPolyStan)
+yFit_linear = chosen_model.predict(xTrainPolyscale)
+yFit_ridge = ridge_model.predict(xTrainPolyscale)
+yFit_lasso = lasso_model.predict(xTrainPolyscale)
+yFit_elastic = elastic_model.predict(xTrainPolyscale)
 
 #plot results linear model (chosen_model)
 plt.plot(xFit,yFit_linear, lw=3, color='r', zorder = 2)
@@ -163,11 +163,6 @@ y_pred_ridge = ridge_model.predict(X_test)
 y_pred_lasso = lasso_model.predict(X_test)
 y_pred_elastic = elastic_model.predict(X_test)
 
-#accuracy testing
-print(f"mean_absolute_error linear: {mean_absolute_error(y_test, y_pred_linear)}")
-print(f"mean_absolute_error ridge:  {mean_absolute_error(y_test, y_pred_ridge)}")
-print(f"mean_absolute_error lasso:  {mean_absolute_error(y_test, y_pred_lasso)}")
-print(f"mean_absolute_error net elastic: {mean_absolute_error(y_test, y_pred_elastic)}")
 
 #Ridge Regression on Garage Area
 i = 0
