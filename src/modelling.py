@@ -202,15 +202,12 @@ ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.0
                 "fit_intercept": [True, False],
                 "solver": ['svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']}
 ridge_regressor = GridSearchCV(ridge_model, ridge_params, scoring = 'neg_mean_squared_error', cv=5 )
-ridge_regressor.fit(xTrainPolyStan, y_train)
-print(ridge_regressor.best_params_)
-print(ridge_regressor.best_score_)
+ridge_regressor.fit(xTrainPolyscale, y_train)
+print(f"beste parameter ridge garage: {ridge_regressor.best_params_}")
+print(f"best score ridge garage: {ridge_regressor.best_score_}")
 
 
-#Linear Model
-mse = cross_val_score(chosen_model, X_train, y_train, scoring = 'neg_mean_squared_error', cv=5)
-mean_mse = np.mean(mse)
-print(mean_mse)
+
 
 
 #Lasso Regressor L2
