@@ -65,11 +65,11 @@ plt.figure()
 plt.plot(scaled_garage_area)
 plt.savefig("graphs/scaled_garage_area")
 
-print(all_data.isna().sum())
+print(all_data[columns_to_use].isna().sum())
 for columns in columns_to_use:
     all_data[columns] = all_data[columns].fillna(0)
 
-print(all_data.isna().sum())
+print(all_data[columns_to_use].isna().sum())
 
 
 
