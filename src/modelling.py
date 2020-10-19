@@ -75,12 +75,10 @@ print(all_data["scaled Garage Area"])
 imputer = SimpleImputer(
     missing_values=np.nan, strategy="constant", fill_value=0)
 scaler = MinMaxScaler()
-
 preprocess = Pipeline(steps = [("imp", imputer) , ('minmaxscale', scaler)])
 
-
-
-
+for columns in columns_to_use:
+    X_train[columns] = X_train[columns].preprocess()
 
 
 #looking at data
@@ -114,16 +112,18 @@ plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel("Bedroom AbvGr", fontsize = 18)
 plt.savefig("graphs/Bedroom_AbvGr")
 
+
 # format training data
-xTraingarage = X_train['Garage Area'].values.reshape(-1,1)
-yTraingarage = y_train.values.reshape(-1,1)
+x_Traingarage = X_train['Garage Area'].values.reshape(-1,1)
+y_Traingarage = y_train.values.reshape(-1,1)
+
+pipe_garage_area = preprocess.fit(X_Traingarage)
 
 # Transform the input features, without regularization
 Poly = PolynomialFeatures(degree = 10, include_bias = False)
-xTrainPoly = Poly.fit_transform(xTraingarage) ##fill empty values!!
+xTrainPoly = Poly.fit_transform(x_Traingarage) ##fill empty values!!
 
-# standardization
-xTrainPolyStan = scaler.fit_transform(xTrainPoly)
+
 # scaler.scale_, scaler.mean_
 
 
