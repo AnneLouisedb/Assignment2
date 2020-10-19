@@ -47,12 +47,6 @@ X_test = X_test[columns_to_use]
 
 
 #functions in preprocessor
-imputer = SimpleImputer(
-    missing_values=np.nan, strategy="constant", fill_value=0)
-scaler = MinMaxScaler()
-
-preprocess = Pipeline(steps = [("imp", imputer) , ('minmaxscale', scaler)])
-
 garage_area = all_data["Garage Area"]
 plt.figure()
 plt.plot(garage_area)
@@ -76,6 +70,16 @@ tmp_garage_area = all_data["Garage Area"] - all_data["Garage Area"].min()
 scaled_garage_area1 = tmp_garage_area / all_data["Garage Area"].max()
 all_data["scaled Garage Area"] = scaled_garage_area1
 print(all_data["scaled Garage Area"])
+
+#using pipeline for preprocessing
+imputer = SimpleImputer(
+    missing_values=np.nan, strategy="constant", fill_value=0)
+scaler = MinMaxScaler()
+
+preprocess = Pipeline(steps = [("imp", imputer) , ('minmaxscale', scaler)])
+
+
+
 
 
 
