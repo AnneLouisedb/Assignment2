@@ -77,37 +77,40 @@ imputer = SimpleImputer(
 scaler = MinMaxScaler()
 preprocess = Pipeline(steps = [("imp", imputer) , ('minmaxscale', scaler)])
 
-for columns in columns_to_use:
-    X_train[columns] = X_train[columns].preprocess()
+X_train = X_train.fillna(0)
+
+#for columns in columns_to_use:
+ #   X_train[columns] = X_train[columns].preprocess()
+
 
 
 #looking at data
 plt.figure()
-plt.scatter(X_train['Overall Qual'], y_train)
+plt.scatter(all_data['Overall Qual'], all_data["SalePrice"])
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Overall Quality', fontsize = 18)
 plt.savefig("graphs/OverallQual")
 
 plt.figure()
-plt.scatter(X_train["Total Bsmt SF"], y_train)
+plt.scatter(all_data["Total Bsmt SF"], all_data["SalePrice"])
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('total Bsmt (square feet)', fontsize = 18)
 plt.savefig("graphs/Total_Bsmt_SF")
 
 plt.figure()
-plt.scatter(X_train['Garage Area'], y_train)
+plt.scatter(all_data['Garage Area'], all_data["SalePrice"])
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Garage Area (square feet)', fontsize = 18)
 plt.savefig("graphs/garage_area")
 
 plt.figure()
-plt.scatter(X_train["Lot Area"], y_train)
+plt.scatter(all_data["Lot Area"], all_data["SalePrice"])
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Lot Area (square feet)', fontsize = 18)
 plt.savefig("graphs/lot_area")
 
 plt.figure()
-plt.scatter(X_train["Bedroom AbvGr"], y_train)
+plt.scatter(all_data["Bedroom AbvGr"], all_data["SalePrice"])
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel("Bedroom AbvGr", fontsize = 18)
 plt.savefig("graphs/Bedroom_AbvGr")
@@ -117,14 +120,12 @@ plt.savefig("graphs/Bedroom_AbvGr")
 x_Traingarage = X_train['Garage Area'].values.reshape(-1,1)
 y_Traingarage = y_train.values.reshape(-1,1)
 
-pipe_garage_area = preprocess.fit(X_Traingarage)
+pipe_garage_area = preprocess.fit(x_Traingarage)
 
 # Transform the input features, without regularization
 Poly = PolynomialFeatures(degree = 10, include_bias = False)
-xTrainPoly = Poly.fit_transform(x_Traingarage) ##fill empty values!!
-
-
-# scaler.scale_, scaler.mean_
+xTrainPoly = Poly.fit_transform(x_Traingarage)
+xTrainPolyStan = scaler.fit_transform(xTrainPoly)
 
 
 #models
@@ -134,10 +135,10 @@ lasso_model = Lasso()
 elastic_model = ElasticNet()
 
 #fit model to polynomial
-chosen_model.fit(xTrainPolyStan, yTraingarage)
-ridge_model.fit(xTrainPolyStan, yTraingarage)
-lasso_model.fit(xTrainPolyStan, yTraingarage)
-elastic_model.fit(xTrainPolyStan, yTraingarage)
+chosen_model.fit(xTrainPolyStan, y_Traingarage)
+ridge_model.fit(xTrainPolyStan, y_Traingarage)
+lasso_model.fit(xTrainPolyStan, y_Traingarage)
+elastic_model.fit(xTrainPolyStan, y_Traingarage)
 
 #predict linear model
 xFit = np.linspace(0,1500,num=200).reshape(-1,1)
