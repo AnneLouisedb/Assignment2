@@ -71,9 +71,11 @@ for columns in columns_to_use:
 
 print(all_data[columns_to_use].isna().sum())
 
-
-
-
+#scaling values using pandas
+tmp_garage_area = all_data["Garage Area"] - all_data["Garage Area"].min()
+scaled_garage_area1 = tmp_garage_area / all_data["Garage Area"].max()
+all_data["scaled Garage Area"] = scaled_garage_area1
+print(all_data["scaled Garage Area"])
 
 
 
