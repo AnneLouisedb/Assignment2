@@ -20,6 +20,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV, cross_val_score, cross_val_predict
 from sklearn.linear_model import ElasticNet, SGDRegressor
 from copy import deepcopy
+from evaluation import evaluate_model
 from src.extra_functions import plot_model, plot_learning_curves, save_fig
 
 
@@ -123,58 +124,69 @@ elastic_model = ElasticNet()
 x_Traingarage = X_train['Garage Area'].values.reshape(-1,1)
 y_Train = y_train.values.reshape(-1,1)
 
-# Transform the input features, without regularization
-Poly = PolynomialFeatures(degree = 10, include_bias = False)
-xTrainPoly = Poly.fit_transform(X_train)
-xTrainPolyscale = scaler.fit_transform(xTrainPoly)
 
-#fitting on training data-set
+#Linear Model
 reg_model.fit(X_train, Y_train)
-ridge_model.fit(X_train, Y_train)
-lasso_model.fit(X_train, Y_train)
-elastic_model.fit(X_train, Y_train)
-
-#predicting on training data_set
 yFit_linear = reg_model.predict(X_train)
-yFit_ridge = ridge_model.predict(X_train)
-yFit_lasso = lasso_model.predict(X_train)
-yFit_elastic = elastic_model.predict(X_train)
-
-#make predictions on the test set
 y_pred_linear = reg_model.predict(X_test)
+
+#Ridge Model
+ridge_model.fit(X_train, Y_train)
+yFit_ridge = ridge_model.predict(X_train)
 y_pred_ridge = ridge_model.predict(X_test)
+
+#Lasso Model
+lasso_model.fit(X_train, Y_train)
+yFit_lasso = lasso_model.predict(X_train)
 y_pred_lasso = lasso_model.predict(X_test)
+
+#Elastic Net Model
+elastic_model.fit(X_train, Y_train)
+yFit_elastic = elastic_model.predict(X_train)
 y_pred_elastic = elastic_model.predict(X_test)
 
+#plot predicted values
 plt.figure()
 plt.scatter(y_test, y_pred_linear)
 plt.savefig("graphs/ predicted values linear model")
 
+print(evaluate_model(reg_model, X_test, y_test))
+print(evaluate_model(ridge_model, X_test, y_test))
+print(evaluate_model(lasso_model, X_test, y_test))
+print(evaluate_model(elastic_model, X_test, y_test))
 
-
-
-
-
-
+# Polynomial
+Poly = PolynomialFeatures(degree = 10, include_bias = False)
+xTrainPoly = Poly.fit_transform(X_train)
+xTrainPolyscale = scaler.fit_transform(xTrainPoly)
 
 
 #fitting on polynomial
+#Linear
 reg_model.fit(xTrainPolyscale, Y_train)
-ridge_model.fit(xTrainPolyscale, Y_train)
-lasso_model.fit(xTrainPolyscale, Y_train)
-elastic_model.fit(xTrainPolyscale, Y_train)
-
-#predicting on training data_set
 yFit_linear = reg_model.predict(xTrainPolyscale)
-yFit_ridge = ridge_model.predict(xTrainPolyscale)
-yFit_lasso = lasso_model.predict(xTrainPolyscale)
-yFit_elastic = elastic_model.predict(xTrainPolyscale)
-
-#make predictions on the test set
 y_pred_linear = reg_model.predict(X_test)
+
+#Ridge
+ridge_model.fit(xTrainPolyscale, Y_train)
+yFit_ridge = ridge_model.predict(xTrainPolyscale)
 y_pred_ridge = ridge_model.predict(X_test)
+
+#Lasso
+lasso_model.fit(xTrainPolyscale, Y_train)
+yFit_lasso = lasso_model.predict(xTrainPolyscale)
 y_pred_lasso = lasso_model.predict(X_test)
+
+#ElasticNet
+elastic_model.fit(xTrainPolyscale, Y_train)
+yFit_elastic = elastic_model.predict(xTrainPolyscale)
 y_pred_elastic = elastic_model.predict(X_test)
+
+
+
+
+
+
 
 
 #predict linear model
