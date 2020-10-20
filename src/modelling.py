@@ -80,9 +80,6 @@ preprocess = Pipeline(steps = [("imp", imputer) , ('minmaxscale', scaler)])
 
 X_train = X_train.fillna(0)
 
-#for columns in columns_to_use:
- #   X_train[columns] = X_train[columns].preprocess()
-
 
 
 #looking at data
@@ -116,6 +113,11 @@ plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel("Bedroom AbvGr", fontsize = 18)
 plt.savefig("graphs/Bedroom_AbvGr")
 
+#models
+reg_model = LinearRegression()
+ridge_model = Ridge()
+lasso_model = Lasso()
+elastic_model = ElasticNet()
 
 # format training data
 x_Traingarage = X_train['Garage Area'].values.reshape(-1,1)
@@ -126,13 +128,37 @@ Poly = PolynomialFeatures(degree = 10, include_bias = False)
 xTrainPoly = Poly.fit_transform(X_train)
 xTrainPolyscale = scaler.fit_transform(xTrainPoly)
 
-#models
-reg_model = LinearRegression()
-ridge_model = Ridge()
-lasso_model = Lasso()
-elastic_model = ElasticNet()
-
 #fitting on training data-set
+reg_model.fit(X_train, Y_train)
+ridge_model.fit(X_train, Y_train)
+lasso_model.fit(X_train, Y_train)
+elastic_model.fit(X_train, Y_train)
+
+#predicting on training data_set
+yFit_linear = reg_model.predict(X_train)
+yFit_ridge = ridge_model.predict(X_train)
+yFit_lasso = lasso_model.predict(X_train)
+yFit_elastic = elastic_model.predict(X_train)
+
+#make predictions on the test set
+y_pred_linear = reg_model.predict(X_test)
+y_pred_ridge = ridge_model.predict(X_test)
+y_pred_lasso = lasso_model.predict(X_test)
+y_pred_elastic = elastic_model.predict(X_test)
+
+plt.figure()
+plt.scatter(y_test, y_pred_linear)
+plt.savefig("graphs/ predicted values linear model")
+
+
+
+
+
+
+
+
+
+#fitting on polynomial
 reg_model.fit(xTrainPolyscale, Y_train)
 ridge_model.fit(xTrainPolyscale, Y_train)
 lasso_model.fit(xTrainPolyscale, Y_train)
