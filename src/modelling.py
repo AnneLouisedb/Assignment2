@@ -37,6 +37,7 @@ columns_to_use = [
 all_data = pd.read_csv(data_dir / "housing-data.csv", index_col="Order")
 target_column = "SalePrice"
 
+
 #splitting data
 X_train, X_test, y_train, y_test = train_test_split(
     all_data.drop(columns=target_column), all_data[target_column]
@@ -118,7 +119,7 @@ plt.savefig("graphs/Bedroom_AbvGr")
 
 # format training data
 x_Traingarage = X_train['Garage Area'].values.reshape(-1,1)
-y_Train_reshape = y_train.values.reshape(-1,1)
+y_Train = y_train.values.reshape(-1,1)
 
 pipe_garage_area = preprocess.fit(x_Traingarage)
 
@@ -134,12 +135,14 @@ lasso_model = Lasso()
 elastic_model = ElasticNet()
 
 #linear regression
-reg_model.fit(xTrainPolyscale, y_Train_reshape)
+reg_model.fit(xTrainPolyscale, y_Train)
+
 #predict linear model
 xFit = np.linspace(0,1500,num=200).reshape(-1,1)
 xFitPoly = Poly.transform(xFit)
 xFitPolyscale = scaler.transform(xFitPoly)
 yFit_reg = reg_model.predict(xFitPolyscale)
+
 
 #plot results linear model
 plt.figure()
@@ -207,9 +210,6 @@ print(f"beste parameter ridge garage: {ridge_regressor.best_params_}")
 print(f"best score ridge garage: {ridge_regressor.best_score_}")
 
 
-
-
-
 #Lasso Regressor L2
 lasso_params = {'alpha':[0.02, 0.024, 0.025, 0.026, 0.03],
                 "fit_intercept": [True, False],
@@ -217,16 +217,18 @@ lasso_params = {'alpha':[0.02, 0.024, 0.025, 0.026, 0.03],
                 "selection" :['cyclic', 'random']
                 }
 lasso_regressor = GridSearchCV(lasso_model, lasso_params, scoring = 'neg_mean_squared_error', cv=5 )
-lasso_regressor.fit(X_train, y_train)
+lasso_regressor.fit(xTrainPolyscale, y_train)
 print(lasso_regressor.best_params_)
 print(lasso_regressor.best_score_)
 
 #Elastic Net
 elastic_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265, 270, 275, 290, 300, 500 ]}
 elastic_regressor = GridSearchCV(elastic_model, elastic_params, scoring = 'neg_mean_squared_error', cv=5 )
-elastic_regressor.fit(X_train,y_train)
+elastic_regressor.fit(xTrainPolyscale,y_train)
 print(elastic_regressor.best_params_)
 print(elastic_regressor.best_score_)
+
+
 
 #prediction and plots
 prediction_lasso = lasso_regressor.predict(X_test)
@@ -244,10 +246,6 @@ plt.savefig("graphs/lasso_model")
 plt.figure()
 sns.distplot(y_test-prediction_elastic).set_title('elastic model')
 plt.savefig("graphs/elastic_model")
-
-plt.figure()
-plt.scatter(X_train, y_train)
-plt.savefig("graphs/scatter training")
 
 
 
