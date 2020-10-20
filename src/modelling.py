@@ -121,11 +121,9 @@ plt.savefig("graphs/Bedroom_AbvGr")
 x_Traingarage = X_train['Garage Area'].values.reshape(-1,1)
 y_Train = y_train.values.reshape(-1,1)
 
-pipe_garage_area = preprocess.fit(x_Traingarage)
-
 # Transform the input features, without regularization
 Poly = PolynomialFeatures(degree = 10, include_bias = False)
-xTrainPoly = Poly.fit_transform(x_Traingarage)
+xTrainPoly = Poly.fit_transform(X_train)
 xTrainPolyscale = scaler.fit_transform(xTrainPoly)
 
 #models
@@ -134,8 +132,24 @@ ridge_model = Ridge()
 lasso_model = Lasso()
 elastic_model = ElasticNet()
 
-#linear regression
-reg_model.fit(xTrainPolyscale, y_Train)
+#fitting on training data-set
+reg_model.fit(xTrainPolyscale, Y_train)
+ridge_model.fit(xTrainPolyscale, Y_train)
+lasso_model.fit(xTrainPolyscale, Y_train)
+elastic_model.fit(xTrainPolyscale, Y_train)
+
+#predicting on training data_set
+yFit_linear = reg_model.predict(xTrainPolyscale)
+yFit_ridge = ridge_model.predict(xTrainPolyscale)
+yFit_lasso = lasso_model.predict(xTrainPolyscale)
+yFit_elastic = elastic_model.predict(xTrainPolyscale)
+
+#make predictions on the test set
+y_pred_linear = reg_model.predict(X_test)
+y_pred_ridge = ridge_model.predict(X_test)
+y_pred_lasso = lasso_model.predict(X_test)
+y_pred_elastic = elastic_model.predict(X_test)
+
 
 #predict linear model
 xFit = np.linspace(0,1500,num=200).reshape(-1,1)
@@ -151,26 +165,6 @@ plt.scatter(X_train['Garage Area'], y_train)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Garage Area (square feet)', fontsize = 18)
 plt.savefig("graphs/linear_garage_area")
-
-
-#fit model to polynomial
-#reg_model.fit(xTrainPolyscale, y_Traingarage)
-#ridge_model.fit(xTrainPolyscale, y_Traingarage)
-#lasso_model.fit(xTrainPolyscale, y_Traingarage)
-#elastic_model.fit(xTrainPolyscale, y_Traingarage)
-
-#predict
-#yFit_linear = reg_model.predict(xTrainPolyscale)
-#yFit_ridge = ridge_model.predict(xTrainPolyscale)
-#Fit_lasso = lasso_model.predict(xTrainPolyscale)
-#yFit_elastic = elastic_model.predict(xTrainPolyscale)
-
-
-#make predictions on the test set
-#y_pred_linear = reg_model.predict(X_test)
-#y_pred_ridge = ridge_model.predict(X_test)
-#y_pred_lasso = lasso_model.predict(X_test)
-#y_pred_elastic = elastic_model.predict(X_test)
 
 
 #Ridge Regression on Garage Area
