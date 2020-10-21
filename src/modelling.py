@@ -129,9 +129,9 @@ cross_val_scores_ridge = [] #this stores average cross validation scores
 alpha_ridge = []
 for i in range(1,9):
     ridgemodel = Ridge(alpha = i * 0.25)
-    scores = cross_val_score(ridgemodel, X_train, y_train, cv=8)
+    scores = cross_val_score(ridgemodel, X_train, y_Train, cv=8)
     average_cross_val_score = mean(scores)*100 # as a percentage
-    cross_val_scores_ridge(average_cross_val_score)
+    cross_val_scores_ridge.append(average_cross_val_score)
     alpha_ridge.append(i*0.25)
 
 for i in range(0, len(alpha_ridge)):
@@ -146,22 +146,22 @@ for i in range(0, len(alpha_ridge)):
 
 
 #Linear Model
-reg_model.fit(X_train, Y_train)
+reg_model.fit(X_train, y_Train)
 yFit_linear = reg_model.predict(X_train)
 y_pred_linear = reg_model.predict(X_test)
 
 #Ridge Model
-ridge_model.fit(X_train, Y_train)
+ridge_model.fit(X_train, y_Train)
 yFit_ridge = ridge_model.predict(X_train)
 y_pred_ridge = ridge_model.predict(X_test)
 
 #Lasso Model
-lasso_model.fit(X_train, Y_train)
+lasso_model.fit(X_train, y_Train)
 yFit_lasso = lasso_model.predict(X_train)
 y_pred_lasso = lasso_model.predict(X_test)
 
 #Elastic Net Model
-elastic_model.fit(X_train, Y_train)
+elastic_model.fit(X_train, y_Train)
 yFit_elastic = elastic_model.predict(X_train)
 y_pred_elastic = elastic_model.predict(X_test)
 
