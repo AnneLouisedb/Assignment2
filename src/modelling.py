@@ -20,7 +20,6 @@ from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV, cross_val_score, cross_val_predict
 from sklearn.linear_model import ElasticNet, SGDRegressor
 from copy import deepcopy
-from evaluation import evaluate_model
 from src.extra_functions import plot_model, plot_learning_curves, save_fig
 
 
@@ -37,7 +36,6 @@ columns_to_use = [
 
 all_data = pd.read_csv(data_dir / "housing-data.csv", index_col="Order")
 target_column = "SalePrice"
-
 
 #splitting data
 X_train, X_test, y_train, y_test = train_test_split(
@@ -76,8 +74,9 @@ print(all_data["scaled Garage Area"])
 #using pipeline for preprocessing
 imputer = SimpleImputer(
     missing_values=np.nan, strategy="constant", fill_value=0)
-scaler = MinMaxScaler()
+scaler = MinMaxScaler() #normalization
 preprocess = Pipeline(steps = [("imp", imputer) , ('minmaxscale', scaler)])
+#X_train = X_train.preprocess.fit_transform(X_train)
 
 X_train = X_train.fillna(0)
 
@@ -114,6 +113,7 @@ plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel("Bedroom AbvGr", fontsize = 18)
 plt.savefig("graphs/Bedroom_AbvGr")
 
+
 #models
 reg_model = LinearRegression()
 ridge_model = Ridge()
@@ -121,8 +121,23 @@ lasso_model = Lasso()
 elastic_model = ElasticNet()
 
 # format training data
-x_Traingarage = X_train['Garage Area'].values.reshape(-1,1)
 y_Train = y_train.values.reshape(-1,1)
+
+#Ridge Model
+cross_val_scores_ridge = [] #this stores average cross validation scores
+alpha_ridge = []
+for i in range(1,9):
+    ridgemodel = Ridge(alpha = i * 0.25)
+    scores = cross_val_score(ridgemodel, X_train, y_train, cv=8)
+    average_cross_val_score = mean(scores)*100 # as a percentage
+
+
+
+
+
+
+
+
 
 
 #Linear Model
@@ -150,10 +165,6 @@ plt.figure()
 plt.scatter(y_test, y_pred_linear)
 plt.savefig("graphs/ predicted values linear model")
 
-print(evaluate_model(reg_model, X_test, y_test))
-print(evaluate_model(ridge_model, X_test, y_test))
-print(evaluate_model(lasso_model, X_test, y_test))
-print(evaluate_model(elastic_model, X_test, y_test))
 
 # Polynomial
 Poly = PolynomialFeatures(degree = 10, include_bias = False)
@@ -181,11 +192,6 @@ y_pred_lasso = lasso_model.predict(X_test)
 elastic_model.fit(xTrainPolyscale, Y_train)
 yFit_elastic = elastic_model.predict(xTrainPolyscale)
 y_pred_elastic = elastic_model.predict(X_test)
-
-
-
-
-
 
 
 
