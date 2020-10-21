@@ -5,6 +5,7 @@ import seaborn as sns
 import pandas as pd
 import scipy
 import sklearn
+from statistics import mean
 from sklearn import preprocessing
 from sklearn.preprocessing import scale
 from sklearn.model_selection import train_test_split
@@ -130,7 +131,11 @@ for i in range(1,9):
     ridgemodel = Ridge(alpha = i * 0.25)
     scores = cross_val_score(ridgemodel, X_train, y_train, cv=8)
     average_cross_val_score = mean(scores)*100 # as a percentage
+    cross_val_scores_ridge(average_cross_val_score)
+    alpha_ridge.append(i*0.25)
 
+for i in range(0, len(alpha_ridge)):
+    print(str(alpha_ridge[i])+ " : " + str(cross_val_scores_ridge[i]))
 
 
 
