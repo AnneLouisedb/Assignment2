@@ -177,11 +177,18 @@ for i in range (1,9):
     cross_val_scores_lasso.append(average_cross_val_score)
     Lambda.append(i*0.25)
 
-for i in range(0, len(alpha)):
-    print(str(alpha[i]) + ' : '+str(cross_val_scores_lasso[i]))
+for i in range(0, len(Lambda)):
+    print(str(Lambda[i]) + ' : '+str(cross_val_scores_lasso[i]))
 
 #example Lasso
-example_lasso = Lasso(lamba = 1)
+example_lasso = Lasso(alpha = 1)
 example_lasso.fit(X_train, y_train)
+print(example_lasso.score(X_test, y_test))
 
-
+plt.figure()
+ax = plt.gca()
+ax.plot(Lambda, scores)
+plt.xlabel('Lambda')
+plt.ylabel('score')
+plt.title('Lasso Model')
+plt.savefig("graphs/ Lamdas Lasso Model")
