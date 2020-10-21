@@ -9,7 +9,7 @@ import sklearn
 from statistics import mean
 from sklearn import preprocessing
 from sklearn.preprocessing import scale
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, RepeatedKFold
 from sklearn.linear_model import LinearRegression
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
@@ -229,14 +229,16 @@ plt.title('ElasticNet Model')
 plt.savefig("graphs/ElasticNet Model")
 
 
-
-
 #Gridsearch Elastic Net
 elastic_params = {
     'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265,
               270, 275, 290, 300, 500]}
 elastic_regressor = GridSearchCV(elastic_model, elastic_params, scoring='neg_mean_squared_error', cv=5)
 elastic_regressor.fit(X_train, y_train)
-print(f"beste parameter Ridge:  {elastic_regressor.best_params_}")
-print(f"best score Ridge: {elastic_regressor.best_score_}")
+print(f"beste parameter Elastic Net:  {elastic_regressor.best_params_}")
+print(f"best score Elastic Net: {elastic_regressor.best_score_}")
 
+#plot learning curve
+plot_learning_curves(ElasticNet(alpha = 0.01), X_train, y_Train)
+
+chosen_model = ElasticNet(alpha = 0.01)
