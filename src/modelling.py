@@ -159,13 +159,22 @@ ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.0
                 "solver": ['svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']}
 ridge_regressor = GridSearchCV(ridge_model, ridge_params, scoring = 'neg_mean_squared_error', cv=5 )
 ridge_regressor.fit(X_train, y_train)
-print(f"beste parameter ridge garage: {ridge_regressor.best_params_}")
-print(f"best score ridge garage: {ridge_regressor.best_score_}")
+print(f"beste parameter Ridge: {ridge_regressor.best_params_}")
+print(f"best score Ridge: {ridge_regressor.best_score_}")
 
+#plot learning curves
+plot_learning_curves(Ridge( alpha = 5, fit_intercept = True, solver = 'svd'), X_train, y_Train)
 
+#Lasso Regression
+cross_val_scores_lasso = []
+lambda = []
 
-
-
-
+for i in range (1,9):
+lassoModel = Lasso(i*0.25, tol = 0.0925)
+lassoModel.fit(X_train, y_train)
+scores = cross_val_score(lassoModel, X_train, y_Train, cv=8)
+average_cross_val_score = mean(scores)*100
+cross_val_scores_lasso.append(average_cross_val_score)
+lambda.append(i*0.25)
 
 
