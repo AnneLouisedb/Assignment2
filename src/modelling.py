@@ -220,6 +220,14 @@ for i in range(1, 9):
     scoresArr.append(scores)
     alpha.append(i*0.25)
 
+plt.figure()
+ax = plt.gca()
+ax.plot(alpha, scoresArr)
+plt.xlabel('alpha')
+plt.ylabel('score')
+plt.title('ElasticNet Model')
+plt.savefig("graphs/ElasticNet Model")
+
 
 
 
