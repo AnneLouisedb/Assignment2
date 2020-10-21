@@ -167,14 +167,21 @@ plot_learning_curves(Ridge( alpha = 5, fit_intercept = True, solver = 'svd'), X_
 
 #Lasso Regression
 cross_val_scores_lasso = []
-lambda = []
+Lambda = []
 
 for i in range (1,9):
-lassoModel = Lasso(i*0.25, tol = 0.0925)
-lassoModel.fit(X_train, y_train)
-scores = cross_val_score(lassoModel, X_train, y_Train, cv=8)
-average_cross_val_score = mean(scores)*100
-cross_val_scores_lasso.append(average_cross_val_score)
-lambda.append(i*0.25)
+    lassoModel = Lasso(i*0.25, tol = 0.0925)
+    lassoModel.fit(X_train, y_train)
+    scores = cross_val_score(lassoModel, X_train, y_Train, cv=8)
+    average_cross_val_score = mean(scores)*100
+    cross_val_scores_lasso.append(average_cross_val_score)
+    Lambda.append(i*0.25)
+
+for i in range(0, len(alpha)):
+    print(str(alpha[i]) + ' : '+str(cross_val_scores_lasso[i]))
+
+#example Lasso
+example_lasso = Lasso(lamba = 1)
+example_lasso.fit(X_train, y_train)
 
 
