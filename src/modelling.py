@@ -124,6 +124,11 @@ ridge_model = Ridge()
 lasso_model = Lasso()
 elastic_model = ElasticNet()
 
+# Polynomial
+Poly = PolynomialFeatures(degree = 10, include_bias = False)
+xTrainPoly = Poly.fit_transform(X_train)
+xTrainPolyscaled = scaler.fit_transform(xTrainPoly)
+
 
 #Ridge Model
 cross_val_scores_ridge = [] #this stores average cross validation scores
@@ -166,15 +171,15 @@ print(f"best score Ridge: {ridge_regressor.best_score_}")
 #plot model and  learning curves
 plot_learning_curves(Ridge( alpha = 5, fit_intercept = True, solver = 'svd'), X_train, y_Train)
 
-plt.figure()
-plot_model(Ridge, X_train, y_Train, polynomial = False, alphas =(0, 10, 100), random_state=42)
-plt.title("ridge model linear")
-plt.savefig('graphs/ridge learning curve, linear')
+#plt.figure()
+#plot_model(Ridge, X_train, y_Train, polynomial = False, alphas =(0, 10, 100), random_state=42)
+#plt.title("ridge model linear")
+#plt.savefig('graphs/ridge learning curve, linear')
 
-plt.figure()
-plot_model(Ridge, X_train, y_Train, polynomial = True, alphas =(0, 5, 10, 100), random_state=42)
-plt.title("ridge model polynomial")
-plt.savefig('graphs/ridge polynomial')
+#plt.figure()
+#lot_model(Ridge, X_train, y_Train, polynomial = True, alphas =(0, 5, 10, 100), random_state=42)
+#plt.title("ridge model polynomial")
+#plt.savefig('graphs/ridge polynomial')
 
 
 

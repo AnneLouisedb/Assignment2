@@ -11,11 +11,6 @@ print(result)
 
 
 
-# Polynomial
-Poly = PolynomialFeatures(degree = 10, include_bias = False)
-xTrainPoly = Poly.fit_transform(X_train)
-xTrainPolyscale = scaler.fit_transform(xTrainPoly)
-
 
 
 
@@ -100,11 +95,6 @@ y_pred_elastic = elastic_model.predict(X_test)
 
 
 
-#predict linear model
-xFit = np.linspace(0,1500,num=200).reshape(-1,1)
-xFitPoly = Poly.transform(xFit)
-xFitPolyscale = scaler.transform(xFitPoly)
-yFit_reg = reg_model.predict(xFitPolyscale)
 
 
 #plot results linear model
@@ -134,8 +124,23 @@ plt.figure()
 sns.distplot(y_test-prediction_elastic).set_title('elastic model')
 plt.savefig("graphs/elastic_model")
 
+#attempt of polynomial
 
 
-#Early Stopping
 
-#Interpreting Learning Curves
+model = Pipeline(
+                [
+                    (
+                        "poly_features",
+                        PolynomialFeatures(degree=10, include_bias=False),
+                    ),
+                    ("std_scaler", StandardScaler()),
+                    ("regul_reg", model),
+                ]
+            )
+        model.fit(xtrain, ytrain)
+        y_new_regul = model.predict(xtrain)
+        lw = 2 if alpha > 0 else 1
+        plt.plot(
+            X_new,
+            y_new_regul,
