@@ -17,15 +17,7 @@ xTrainPoly = Poly.fit_transform(X_train)
 xTrainPolyscale = scaler.fit_transform(xTrainPoly)
 
 
-#Ridge Regressor L1
-ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20,
-                         200, 230, 250, 265, 270, 275, 290, 300, 500 ],
-                "fit_intercept": [True, False],
-                "solver": ['svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']}
-ridge_regressor = GridSearchCV(ridge_model, ridge_params, scoring = 'neg_mean_squared_error', cv=5 )
-ridge_regressor.fit(xTrainPolyscale, y_train)
-print(f"beste parameter ridge garage: {ridge_regressor.best_params_}")
-print(f"best score ridge garage: {ridge_regressor.best_score_}")
+
 
 
 

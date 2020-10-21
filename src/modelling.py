@@ -81,6 +81,9 @@ preprocess = Pipeline(steps = [("imp", imputer) , ('minmaxscale', scaler)])
 X_train = X_train.fillna(0)
 #scaling
 xTrainPolyStan = scaler.fit_transform(X_train)
+# format training data
+y_Train = y_train.values.reshape(-1,1)
+
 
 #looking at data
 plt.figure()
@@ -120,8 +123,6 @@ ridge_model = Ridge()
 lasso_model = Lasso()
 elastic_model = ElasticNet()
 
-# format training data
-y_Train = y_train.values.reshape(-1,1)
 
 #Ridge Model
 cross_val_scores_ridge = [] #this stores average cross validation scores
@@ -151,7 +152,15 @@ plt.ylabel('score')
 plt.title('Ridge Model')
 plt.savefig("graphs/RidgeModel")
 
-
+#Ridge Regressor L1, using more hyperparameters
+ridge_params = {'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20,
+                         200, 230, 250, 265, 270, 275, 290, 300, 500 ],
+                "fit_intercept": [True, False],
+                "solver": ['svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']}
+ridge_regressor = GridSearchCV(ridge_model, ridge_params, scoring = 'neg_mean_squared_error', cv=5 )
+ridge_regressor.fit(X_train, y_train)
+print(f"beste parameter ridge garage: {ridge_regressor.best_params_}")
+print(f"best score ridge garage: {ridge_regressor.best_score_}")
 
 
 
