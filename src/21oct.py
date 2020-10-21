@@ -12,11 +12,6 @@ print(result)
 
 
 
-
-
-
-
-
 #Ridge Regression 2.0
 i = 0
 ls = ['-', '--', ':']
@@ -24,11 +19,9 @@ color = ['r', 'g', 'orange']
 
 for a in [0, 2, 2000]:
     ridgeReg = Ridge(alpha=a)
-    ridgeReg.fit(xTrainPolyscale, y_train)
+    ridgeReg.fit(xTrainPolyscaled, y_train)
 
-    # predict
-    xFit2 = np.linspace(0, 1500, num=200).reshape(-1, 1)
-    xFitPoly2 = Poly.transform(xFit2)
+
     xFitPolyscale2 = scaler.transform(xFitPoly2)
     yFit2 = ridgeReg.predict(xFitPolyscale2)
 
@@ -45,10 +38,7 @@ for a in [0, 2, 2000]:
 
 
 
-#Linear Model
-reg_model.fit(X_train, y_Train)
-yFit_linear = reg_model.predict(X_train)
-y_pred_linear = reg_model.predict(X_test)
+
 
 #Ridge Model
 ridge_model.fit(X_train, y_Train)
@@ -97,16 +87,6 @@ y_pred_elastic = elastic_model.predict(X_test)
 
 
 
-#plot results linear model
-plt.figure()
-plt.plot(xFit,yFit_reg, lw=3, color='r', zorder = 2)
-plt.scatter(X_train['Garage Area'], y_train)
-plt.ylabel('Sale Price (dollars)', fontsize = 18)
-plt.xlabel('Garage Area (square feet)', fontsize = 18)
-plt.savefig("graphs/linear_garage_area")
-
-
-
 #prediction and plots
 prediction_lasso = lasso_regressor.predict(X_test)
 prediction_ridge = ridge_regressor.predict(X_test)
@@ -124,23 +104,17 @@ plt.figure()
 sns.distplot(y_test-prediction_elastic).set_title('elastic model')
 plt.savefig("graphs/elastic_model")
 
-#attempt of polynomial
 
 
 
-model = Pipeline(
-                [
-                    (
-                        "poly_features",
-                        PolynomialFeatures(degree=10, include_bias=False),
-                    ),
-                    ("std_scaler", StandardScaler()),
-                    ("regul_reg", model),
-                ]
-            )
-        model.fit(xtrain, ytrain)
-        y_new_regul = model.predict(xtrain)
-        lw = 2 if alpha > 0 else 1
-        plt.plot(
-            X_new,
-            y_new_regul,
+#Linear Model
+lasso_model.fit(xTrainPolyscaled, y_Train)
+yFit_lasso = lasso_model.predict(xTrainPolyscaled)
+plt.figure()
+plt.plot(
+    X_train,
+    yFit_lasso)
+plt.savefig("graphs/graph10")
+
+y_pred_linear = reg_model.predict(X_test)
+

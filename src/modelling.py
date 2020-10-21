@@ -80,11 +80,15 @@ scaler = MinMaxScaler() #normalization
 preprocess = Pipeline(steps = [("imp", imputer) , ('minmaxscale', scaler)])
 #X_train = X_train.preprocess.fit_transform(X_train)
 X_train = X_train.fillna(0)
-#scaling
-xTrainPolyStan = scaler.fit_transform(X_train)
+
 # format training data
 y_Train = y_train.values.reshape(-1,1)
 
+#models
+reg_model = LinearRegression()
+ridge_model = Ridge()
+lasso_model = Lasso()
+elastic_model = ElasticNet()
 
 #looking at data
 plt.figure()
@@ -116,18 +120,6 @@ plt.scatter(all_data["Bedroom AbvGr"], all_data["SalePrice"])
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel("Bedroom AbvGr", fontsize = 18)
 plt.savefig("graphs/Bedroom_AbvGr")
-
-
-#models
-reg_model = LinearRegression()
-ridge_model = Ridge()
-lasso_model = Lasso()
-elastic_model = ElasticNet()
-
-# Polynomial
-Poly = PolynomialFeatures(degree = 10, include_bias = False)
-xTrainPoly = Poly.fit_transform(X_train)
-xTrainPolyscaled = scaler.fit_transform(xTrainPoly)
 
 
 #Ridge Model
@@ -262,3 +254,13 @@ print(f"best score Elastic Net: {elastic_regressor.best_score_}")
 plot_learning_curves(ElasticNet(alpha = 0.01), X_train, y_Train)
 
 chosen_model = ElasticNet(alpha = 0.01)
+
+# Polynomial
+Poly = PolynomialFeatures(degree = 10, include_bias = False)
+xTrainPoly = Poly.fit_transform(X_train)
+xTrainPolyscaled = scaler.fit_transform(xTrainPoly) #do i need to scale again if the training data is already scaled?
+#looking at data
+plt.figure()
+plt.scatter(X_train, y_train)
+plt.title("scatter training data")
+plt.savefig("graphs/scatter training data")
