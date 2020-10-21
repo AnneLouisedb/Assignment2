@@ -4,6 +4,7 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 import scipy
+from numpy import absolute
 import sklearn
 from statistics import mean
 from sklearn import preprocessing
@@ -194,7 +195,7 @@ plt.title('Lasso Model')
 plt.savefig("graphs/ Lamdas Lasso Model")
 
 # Lasso Regressor L2, looking are more hyperparameters
-lasso_params = {'alpha': [0.02, 0.024, 0.025, 0.026, 0.03, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
+lasso_params = {'alpha': [0.02, 0.024, 0.025, 0.026, 0.03, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 5.0, 10, 20, 15, 12, 8, 25, 30, 200],
                 "fit_intercept": [True, False],
                 "copy_X": [True, False],
                 "selection": ['cyclic', 'random']
@@ -204,3 +205,30 @@ lasso_regressor.fit(X_train, y_train)
 
 print(f"beste parameter Lasso:{lasso_regressor.best_params_}")
 print(f"best score Lasso:{lasso_regressor.best_score_}")
+
+# Elastic Net
+alpha=[]
+scoresArr=[]
+
+for i in range(1, 9):
+    ElasticNetModel = ElasticNet(alpha=i*0.25, l1_ratio=0.5)
+    cv = RepeatedKFold(n_splits=10, n_repeats=3, random_state=1)
+   # evaluate model
+    scores = cross_val_score(ElasticNetModel, X_train, y_train, scoring='neg_mean_absolute_error', cv=cv, n_jobs=-1)
+   # force scores to be positive
+    scores = absolute(scores) #to have the positive values
+    scoresArr.append(scores)
+    alpha.append(i*0.25)
+
+
+
+
+#Gridsearch Elastic Net
+elastic_params = {
+    'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265,
+              270, 275, 290, 300, 500]}
+elastic_regressor = GridSearchCV(elastic_model, elastic_params, scoring='neg_mean_squared_error', cv=5)
+elastic_regressor.fit(X_train, y_train)
+print(f"beste parameter Ridge:  {elastic_regressor.best_params_}")
+print(f"best score Ridge: {elastic_regressor.best_score_}")
+

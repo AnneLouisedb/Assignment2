@@ -48,14 +48,7 @@ for a in [0, 2, 2000]:
     plt.savefig("graphs/ridge_2.0")
 
 
-    # Elastic Net
-    elastic_params = {
-        'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265,
-                  270, 275, 290, 300, 500]}
-    elastic_regressor = GridSearchCV(elastic_model, elastic_params, scoring='neg_mean_squared_error', cv=5)
-    elastic_regressor.fit(xTrainPolyscale, y_train)
-    print(elastic_regressor.best_params_)
-    print(elastic_regressor.best_score_)
+
 
 #Linear Model
 reg_model.fit(X_train, y_Train)
