@@ -117,10 +117,6 @@ plt.savefig("graphs/linear_garage_area")
 
 
 
-
-
-
-
 #prediction and plots
 prediction_lasso = lasso_regressor.predict(X_test)
 prediction_ridge = ridge_regressor.predict(X_test)

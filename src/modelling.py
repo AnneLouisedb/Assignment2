@@ -163,8 +163,20 @@ ridge_regressor.fit(X_train, y_train)
 print(f"beste parameter Ridge: {ridge_regressor.best_params_}")
 print(f"best score Ridge: {ridge_regressor.best_score_}")
 
-#plot learning curves
+#plot model and  learning curves
 plot_learning_curves(Ridge( alpha = 5, fit_intercept = True, solver = 'svd'), X_train, y_Train)
+
+plt.figure()
+plot_model(Ridge, X_train, y_Train, polynomial = False, alphas =(0, 10, 100), random_state=42)
+plt.title("ridge model linear")
+plt.savefig('graphs/ridge learning curve, linear')
+
+plt.figure()
+plot_model(Ridge, X_train, y_Train, polynomial = True, alphas =(0, 5, 10, 100), random_state=42)
+plt.title("ridge model polynomial")
+plt.savefig('graphs/ridge polynomial')
+
+
 
 #Lasso Regression
 cross_val_scores_lasso = []
@@ -207,7 +219,7 @@ print(f"beste parameter Lasso:{lasso_regressor.best_params_}")
 print(f"best score Lasso:{lasso_regressor.best_score_}")
 
 #plot learning curve
-plot_learning_curves(Lasso(alpha = 25, copy_X = False, fit_intercept = True, selection = random), X_train, y_Train)
+plot_learning_curves(Lasso(alpha = 25, copy_X = False, fit_intercept = True, selection = 'random'), X_train, y_Train)
 
 # Elastic Net
 alpha=[]
