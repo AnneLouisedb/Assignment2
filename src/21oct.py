@@ -47,16 +47,6 @@ for a in [0, 2, 2000]:
     plt.xlabel('columns_to_use', fontsize = 18)
     plt.savefig("graphs/ridge_2.0")
 
-    # Lasso Regressor L2
-    lasso_params = {'alpha': [0.02, 0.024, 0.025, 0.026, 0.03],
-                    "fit_intercept": [True, False],
-                    "copy_X": [True, False],
-                    "selection": ['cyclic', 'random']
-                    }
-    lasso_regressor = GridSearchCV(lasso_model, lasso_params, scoring='neg_mean_squared_error', cv=5)
-    lasso_regressor.fit(xTrainPolyscale, y_train)
-    print(lasso_regressor.best_params_)
-    print(lasso_regressor.best_score_)
 
     # Elastic Net
     elastic_params = {

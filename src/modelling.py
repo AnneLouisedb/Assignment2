@@ -192,3 +192,15 @@ plt.xlabel('Lambda')
 plt.ylabel('score')
 plt.title('Lasso Model')
 plt.savefig("graphs/ Lamdas Lasso Model")
+
+# Lasso Regressor L2, looking are more hyperparameters
+lasso_params = {'alpha': [0.02, 0.024, 0.025, 0.026, 0.03, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
+                "fit_intercept": [True, False],
+                "copy_X": [True, False],
+                "selection": ['cyclic', 'random']
+                }
+lasso_regressor = GridSearchCV(lasso_model, lasso_params, scoring='neg_mean_squared_error', cv=5)
+lasso_regressor.fit(X_train, y_train)
+
+print(f"beste parameter Lasso:{lasso_regressor.best_params_}")
+print(f"best score Lasso:{lasso_regressor.best_score_}")
