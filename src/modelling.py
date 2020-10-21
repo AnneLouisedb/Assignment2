@@ -22,7 +22,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV, cross_val_score, cross_val_predict
 from sklearn.linear_model import ElasticNet, SGDRegressor
 from copy import deepcopy
-from src.extra_functions import plot_model, plot_learning_curves, save_fig
+from src.extra_functions import plot_model, plot_learning_curves
 
 
 
@@ -205,6 +205,9 @@ lasso_regressor.fit(X_train, y_train)
 
 print(f"beste parameter Lasso:{lasso_regressor.best_params_}")
 print(f"best score Lasso:{lasso_regressor.best_score_}")
+
+#plot learning curve
+plot_learning_curves(Lasso(alpha = 25, copy_X = False, fit_intercept = True, selection = random), X_train, y_Train)
 
 # Elastic Net
 alpha=[]
