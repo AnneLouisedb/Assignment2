@@ -48,59 +48,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 X_train = X_train[columns_to_use]
 X_test = X_test[columns_to_use]
 
-# find categorical variables
-categorical = [var for var in all_data.columns if all_data[var].dtype=='O']
-print('There are {} categorical variables'.format(len(categorical)))
-# find numerical variables
-numerical = [var for var in all_data.columns if all_data[var].dtype!='O']
-print('There are {} numerical variables'.format(len(numerical)))
 
-#look at how much data is missing
-for var in all_data.columns:
-    if all_data[var].isnull().sum()>0:
-        print(var, all_data[var].isnull().mean())
-#the features for whicha lot of data is missing
-for var in all_data.columns:
-    if all_data[var].isnull().mean()>0.70:
-        print(f"more than 0.70 missing values: {var, all_data[var].unique()}")
-#numerical values are discrete or continuous
-discrete = []
-for var in numerical:
-    if len(all_data[var].unique())<20:
-        print(var, ' values: ', all_data[var].unique())
-        discrete.append(var)
-
-continuous = [var for var in numerical if var not in discrete and var not in ['Id', 'SalePrice']]
-
-
-#classifier = LabelEncoder()
-#all_data["Garage Qual"] = classifier.fit_transform(all_data["Garage Qual"])
-
-X_train2, X_test2, y_train2, y_test2 = train_test_split(
-    all_data.drop(columns=target_column), all_data[target_column]
-)
-
-X_train2["totalSF"] = X_train2['Gr Liv Area'] + X_train2['Total Bsmt SF']
-X_train2["AllfloorSF"] = X_train2["1st Flr SF"] + X_train2["2nd Flr SF"]
-X_train2["Qual+Cond"] = X_train2["Overall Qual"] + X_train2["Overall Cond"]
-more_columns = [
-    "Lot Area",
-    "Overall Qual",
-    "Total Bsmt SF",
-    "Garage Area",
-    "Bedroom AbvGr",
-    "AllfloorSF",
-    "totalSF",
-    "Qual+Cond",
-'Year Built']
-X_train2 = X_train2[more_columns]
-X_train2 = X_train2.fillna(0)
-
-print(X_train2)
-#looking at new columns
-sns.distplot(X_train2["totalSF"])
-sns.distplot(X_train2["Qual+Cond"])
-sns.distplot(X_train2["AllfloorSF"])
 
 #scattermix
 attributes = [
@@ -116,17 +64,6 @@ scatter_matrix(all_data[attributes], figsize=(12,8))
 plt.savefig("graphs/scatter_matrix_plot")
 
 #functions in preprocessor
-garage_area = all_data["Garage Area"]
-plt.figure()
-plt.plot(garage_area)
-plt.savefig("graphs/garagearea2")
-
-garage_area_matrix = garage_area.values.reshape(-1,1)
-scaled = preprocessing.MinMaxScaler()
-scaled_garage_area = scaled.fit_transform(garage_area_matrix)
-plt.figure()
-plt.plot(scaled_garage_area)
-plt.savefig("graphs/scaled_garage_area")
 
 print(all_data[columns_to_use].isna().sum())
 for columns in columns_to_use:
@@ -158,6 +95,10 @@ lasso_model = Lasso()
 elastic_model = ElasticNet()
 
 #looking at data
+plt.figure()
+sns.distplot(y_Train, bins=30, fit=norm)
+plt.savefig('graphs/ saleprice positive skewness') #its peak deviates from normal distribution
+
 plt.figure()
 plt.scatter(all_data['Overall Qual'], all_data["SalePrice"])
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
