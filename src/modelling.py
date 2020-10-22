@@ -17,7 +17,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, RidgeCV, LassoCV, LassoLarsCV
-from sklearn.preprocessing import PolynomialFeatures, StandardScaler, MinMaxScaler
+from sklearn.preprocessing import PolynomialFeatures, StandardScaler, MinMaxScaler, LabelEncoder
 from sklearn.compose import ColumnTransformer, make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV, cross_val_score, cross_val_predict
@@ -45,9 +45,19 @@ X_train, X_test, y_train, y_test = train_test_split(
     all_data.drop(columns=target_column), all_data[target_column]
 )
 
-X_train["totalSF"] = X_train['Gr Liv Area'] + X_train['Total Bsmt SF']
-X_train["AllfloorSF"] = X_train["1st Flr SF"] + X_train["2nd Flr SF"]
-X_train["Qual+Cond"] = X_train["Overall Qual"] + X_train["Overall Cond"]
+X_train = X_train[columns_to_use]
+X_test = X_test[columns_to_use]
+
+classifier = LabelEncoder()
+all_data["GarageQual"]= classifier.fit_transform(all_data["GarageQual"])
+
+X_train2, X_test2, y_train2, y_test2 = train_test_split(
+    all_data.drop(columns=target_column), all_data[target_column]
+)
+
+X_train2["totalSF"] = X_train2['Gr Liv Area'] + X_train2['Total Bsmt SF']
+X_train2["AllfloorSF"] = X_train2["1st Flr SF"] + X_train2["2nd Flr SF"]
+X_train2["Qual+Cond"] = X_train2["Overall Qual"] + X_train2["Overall Cond"]
 more_columns = [
     "Lot Area",
     "Overall Qual",
@@ -56,12 +66,12 @@ more_columns = [
     "Bedroom AbvGr",
     "AllfloorSF",
     "totalSF",
-    "Qual+Cond"]
-X_train2 = X_train[more_columns]
+    "Qual+Cond",
+'Year Built']
+X_train2 = X_train2[more_columns]
+X_train2 = X_train2.fillna(0)
 
 
-X_train = X_train[columns_to_use]
-X_test = X_test[columns_to_use]
 
 #scattermix
 attributes = [
@@ -280,7 +290,6 @@ print(f"best score Elastic Net: {elastic_regressor.best_score_}")
 
 #plot learning curve
 plot_learning_curves(ElasticNet(alpha = 0.01), X_train, y_Train)
-
 chosen_model = ElasticNet(alpha = 0.01)
 
 # Polynomial
@@ -303,7 +312,7 @@ chosen_model.fit(X_train, y_Train)
 yFit_elastic = chosen_model.predict(X_train)
 y_pred_elastic = chosen_model.predict(X_test
                                        )
-# Plot predictions
+# Plot predictions chosen model
 plt.figure()
 plt.scatter(yFit_elastic, y_train, c = "blue", marker = "s", label = "Training data")
 plt.scatter(y_pred_elastic, y_test, c = "lightgreen", marker = "s", label = "Validation data")
@@ -313,3 +322,4 @@ plt.ylabel("Real values")
 plt.legend(loc = "upper left")
 plt.plot([10.5, 13.5], [10.5, 13.5], c = "red")
 plt.savefig("graphs/predictedvaluesElasticNet")
+
