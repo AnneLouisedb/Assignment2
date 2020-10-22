@@ -166,7 +166,7 @@ ridge_regressor.fit(X_train, y_train)
 print(f"beste parameter Ridge: {ridge_regressor.best_params_}")
 print(f"best score Ridge: {ridge_regressor.best_score_}")
 
-#plot model and  learning curves
+#plot learning curves
 plot_learning_curves(Ridge( alpha = 5, fit_intercept = True, solver = 'svd'), X_train, y_Train)
 
 #Lasso Regression
