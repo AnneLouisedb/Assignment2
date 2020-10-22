@@ -48,6 +48,22 @@ X_train, X_test, y_train, y_test = train_test_split(
 X_train = X_train[columns_to_use]
 X_test = X_test[columns_to_use]
 
+# find categorical variables
+categorical = [var for var in all_data.columns if all_data[var].dtype=='O']
+print('There are {} categorical variables'.format(len(categorical)))
+# find numerical variables
+numerical = [var for var in all_data.columns if all_data[var].dtype!='O']
+print('There are {} numerical variables'.format(len(numerical)))
+
+#look at how much data is missing
+for var in all_data.columns:
+    if all_data[var].isnull().sum()>0:
+        print(var, all_data[var].isnull().mean())
+#the features for whicha lot of data is missing
+for var in all_data.columns:
+    if all_data[var].isnull().mean()>0.70:
+        print(f"more than 0.70 missing values: {var, all_data[var].unique()}")
+
 #classifier = LabelEncoder()
 #all_data["Garage Qual"] = classifier.fit_transform(all_data["Garage Qual"])
 
@@ -294,7 +310,9 @@ print(f"beste parameter Elastic Net:  {elastic_regressor.best_params_}")
 print(f"best score Elastic Net: {elastic_regressor.best_score_}")
 
 #plot learning curve
+plt.figure()
 plot_learning_curves(ElasticNet(alpha = 0.01), X_train, y_Train)
+plt.savefig("graphs/learningcurve elastic net")
 chosen_model = ElasticNet(alpha = 0.01)
 
 # Polynomial
