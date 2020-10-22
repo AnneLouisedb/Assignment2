@@ -63,6 +63,15 @@ for var in all_data.columns:
 for var in all_data.columns:
     if all_data[var].isnull().mean()>0.70:
         print(f"more than 0.70 missing values: {var, all_data[var].unique()}")
+#numerical values are discrete or continuous
+discrete = []
+for var in numerical:
+    if len(all_data[var].unique())<20:
+        print(var, ' values: ', all_data[var].unique())
+        discrete.append(var)
+
+continuous = [var for var in numerical if var not in discrete and var not in ['Id', 'SalePrice']]
+
 
 #classifier = LabelEncoder()
 #all_data["Garage Qual"] = classifier.fit_transform(all_data["Garage Qual"])
