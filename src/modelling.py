@@ -256,8 +256,7 @@ chosen_model = ElasticNet(alpha = 0.01)
 #Elastic Net Model
 chosen_model.fit(X_train, y_Train)
 yFit_elastic = chosen_model.predict(X_train)
-y_pred_elastic = chosen_model.predict(X_test
-                                       )
+y_pred_elastic = chosen_model.predict(X_test)
 # Plot predictions chosen model
 plt.figure()
 plt.scatter(yFit_elastic, y_train, c = "blue", marker = "s", label = "Training data")
