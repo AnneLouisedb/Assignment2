@@ -49,7 +49,6 @@ X_train = X_train[columns_to_use]
 X_test = X_test[columns_to_use]
 
 
-
 #scattermix
 attributes = [
     "Lot Area",
@@ -96,7 +95,7 @@ elastic_model = ElasticNet()
 
 #looking at data
 plt.figure()
-sns.distplot(y_Train, bins=30, fit=norm)
+sns.distplot(all_data['SalePrice'], bins=30)
 plt.savefig('graphs/ saleprice positive skewness') #its peak deviates from normal distribution
 
 plt.figure()
@@ -169,18 +168,6 @@ print(f"best score Ridge: {ridge_regressor.best_score_}")
 
 #plot model and  learning curves
 plot_learning_curves(Ridge( alpha = 5, fit_intercept = True, solver = 'svd'), X_train, y_Train)
-
-#plt.figure()
-#plot_model(Ridge, X_train, y_Train, polynomial = False, alphas =(0, 10, 100), random_state=42)
-#plt.title("ridge model linear")
-#plt.savefig('graphs/ridge learning curve, linear')
-
-#plt.figure()
-#lot_model(Ridge, X_train, y_Train, polynomial = True, alphas =(0, 5, 10, 100), random_state=42)
-#plt.title("ridge model polynomial")
-#plt.savefig('graphs/ridge polynomial')
-
-
 
 #Lasso Regression
 cross_val_scores_lasso = []
@@ -265,20 +252,6 @@ plot_learning_curves(ElasticNet(alpha = 0.01), X_train, y_Train)
 plt.savefig("graphs/learningcurve elastic net")
 chosen_model = ElasticNet(alpha = 0.01)
 
-# Polynomial
-#Poly = PolynomialFeatures(degree = 10, include_bias = False)
-#xTrainPoly = Poly.fit_transform(X_train)
-#xTrainPolyscaled = scaler.fit_transform(xTrainPoly) #do i need to scale again if the training data is already scaled?
-
-#Ridge Model
-#ridge_model.fit(X_train, y_Train)
-#yFit_ridge = ridge_model.predict(X_train)
-#y_pred_ridge = ridge_model.predict(X_test)
-
-#Lasso Model
-#lasso_model.fit(X_train, y_Train)
-#yFit_lasso = lasso_model.predict(X_train)
-#y_pred_lasso = lasso_model.predict(X_test)
 
 #Elastic Net Model
 chosen_model.fit(X_train, y_Train)
