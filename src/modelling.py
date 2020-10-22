@@ -17,7 +17,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, RidgeCV, LassoCV, LassoLarsCV
-from sklearn.preprocessing import PolynomialFeatures, StandardScaler, MinMaxScaler, LabelEncoder
+from sklearn.preprocessing import PolynomialFeatures, StandardScaler, MinMaxScaler, LabelEncoder, OneHotEncoder
 from sklearn.compose import ColumnTransformer, make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV, cross_val_score, cross_val_predict
@@ -48,8 +48,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 X_train = X_train[columns_to_use]
 X_test = X_test[columns_to_use]
 
-classifier = LabelEncoder()
-all_data["GarageQual"]= classifier.fit_transform(all_data["GarageQual"])
+#classifier = LabelEncoder()
+#all_data["Garage Qual"] = classifier.fit_transform(all_data["Garage Qual"])
 
 X_train2, X_test2, y_train2, y_test2 = train_test_split(
     all_data.drop(columns=target_column), all_data[target_column]
@@ -71,7 +71,11 @@ more_columns = [
 X_train2 = X_train2[more_columns]
 X_train2 = X_train2.fillna(0)
 
-
+print(X_train2)
+#looking at new columns
+sns.distplot(X_train2["totalSF"])
+sns.distplot(X_train2["Qual+Cond"])
+sns.distplot(X_train2["AllfloorSF"])
 
 #scattermix
 attributes = [
@@ -164,7 +168,7 @@ plt.savefig("graphs/Bedroom_AbvGr")
 cross_val_scores_ridge = [] #this stores average cross validation scores
 alpha_ridge = []
 for i in range(1,9):
-    ridgemodel = Ridge(alpha = i * 0.25)
+    ridgemodel = Ridge(alpha = i*0.25)
     scores = cross_val_score(ridgemodel, X_train, y_Train, cv=8)
     average_cross_val_score = mean(scores)*100 # as a percentage
     cross_val_scores_ridge.append(average_cross_val_score)
@@ -178,7 +182,6 @@ example_ridge = Ridge(alpha = 1)
 example_ridge.fit(X_train, y_train)
 #evaluate ridge model
 print(example_ridge.score(X_test, y_test))
-
 
 plt.figure()
 ax = plt.gca()
@@ -254,7 +257,9 @@ print(f"beste parameter Lasso:{lasso_regressor.best_params_}")
 print(f"best score Lasso:{lasso_regressor.best_score_}")
 
 #plot learning curve
+plt.figure()
 plot_learning_curves(Lasso(alpha = 25, copy_X = False, fit_intercept = True, selection = 'random'), X_train, y_Train)
+plt.savefig("graphs/ lasso learning curve")
 
 # Elastic Net
 alpha=[]
