@@ -7,6 +7,7 @@ import scipy
 from numpy import absolute
 import sklearn
 from statistics import mean
+from pandas.plotting import scatter_matrix
 from sklearn import preprocessing
 from sklearn.preprocessing import scale
 from sklearn.model_selection import train_test_split, RepeatedKFold
@@ -47,6 +48,18 @@ X_train, X_test, y_train, y_test = train_test_split(
 X_train = X_train[columns_to_use]
 X_test = X_test[columns_to_use]
 
+#scattermix
+attributes = [
+    "Lot Area",
+    "Overall Qual",
+    "Total Bsmt SF",
+    "Garage Area",
+    "Bedroom AbvGr",
+    "SalePrice"
+]
+plt.figure()
+scatter_matrix(all_data[attributes], figsize=(12,8))
+save_fig("graphs/scatter_matrix_plot")
 
 #functions in preprocessor
 garage_area = all_data["Garage Area"]
@@ -256,11 +269,7 @@ plot_learning_curves(ElasticNet(alpha = 0.01), X_train, y_Train)
 chosen_model = ElasticNet(alpha = 0.01)
 
 # Polynomial
-Poly = PolynomialFeatures(degree = 10, include_bias = False)
-xTrainPoly = Poly.fit_transform(X_train)
-xTrainPolyscaled = scaler.fit_transform(xTrainPoly) #do i need to scale again if the training data is already scaled?
-#looking at data
-plt.figure()
-plt.scatter(X_train, y_train)
-plt.title("scatter training data")
-plt.savefig("graphs/scatter training data")
+#Poly = PolynomialFeatures(degree = 10, include_bias = False)
+#xTrainPoly = Poly.fit_transform(X_train)
+#xTrainPolyscaled = scaler.fit_transform(xTrainPoly) #do i need to scale again if the training data is already scaled?
+
