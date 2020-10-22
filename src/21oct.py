@@ -40,20 +40,7 @@ for a in [0, 2, 2000]:
 
 
 
-#Ridge Model
-ridge_model.fit(X_train, y_Train)
-yFit_ridge = ridge_model.predict(X_train)
-y_pred_ridge = ridge_model.predict(X_test)
 
-#Lasso Model
-lasso_model.fit(X_train, y_Train)
-yFit_lasso = lasso_model.predict(X_train)
-y_pred_lasso = lasso_model.predict(X_test)
-
-#Elastic Net Model
-elastic_model.fit(X_train, y_Train)
-yFit_elastic = elastic_model.predict(X_train)
-y_pred_elastic = elastic_model.predict(X_test)
 
 #plot predicted values
 plt.figure()
@@ -103,6 +90,7 @@ plt.savefig("graphs/lasso_model")
 plt.figure()
 sns.distplot(y_test-prediction_elastic).set_title('elastic model')
 plt.savefig("graphs/elastic_model")
+
 
 
 

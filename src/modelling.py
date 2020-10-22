@@ -45,6 +45,21 @@ X_train, X_test, y_train, y_test = train_test_split(
     all_data.drop(columns=target_column), all_data[target_column]
 )
 
+X_train["totalSF"] = X_train['Gr Liv Area'] + X_train['Total Bsmt SF']
+X_train["AllfloorSF"] = X_train["1st Flr SF"] + X_train["2nd Flr SF"]
+X_train["Qual+Cond"] = X_train["Overall Qual"] + X_train["Overall Cond"]
+more_columns = [
+    "Lot Area",
+    "Overall Qual",
+    "Total Bsmt SF",
+    "Garage Area",
+    "Bedroom AbvGr",
+    "AllfloorSF",
+    "totalSF",
+    "Qual+Cond"]
+X_train2 = X_train[more_columns]
+
+
 X_train = X_train[columns_to_use]
 X_test = X_test[columns_to_use]
 
@@ -59,7 +74,7 @@ attributes = [
 ]
 plt.figure()
 scatter_matrix(all_data[attributes], figsize=(12,8))
-save_fig("graphs/scatter_matrix_plot")
+plt.savefig("graphs/scatter_matrix_plot")
 
 #functions in preprocessor
 garage_area = all_data["Garage Area"]
@@ -273,3 +288,28 @@ chosen_model = ElasticNet(alpha = 0.01)
 #xTrainPoly = Poly.fit_transform(X_train)
 #xTrainPolyscaled = scaler.fit_transform(xTrainPoly) #do i need to scale again if the training data is already scaled?
 
+#Ridge Model
+#ridge_model.fit(X_train, y_Train)
+#yFit_ridge = ridge_model.predict(X_train)
+#y_pred_ridge = ridge_model.predict(X_test)
+
+#Lasso Model
+#lasso_model.fit(X_train, y_Train)
+#yFit_lasso = lasso_model.predict(X_train)
+#y_pred_lasso = lasso_model.predict(X_test)
+
+#Elastic Net Model
+chosen_model.fit(X_train, y_Train)
+yFit_elastic = chosen_model.predict(X_train)
+y_pred_elastic = chosen_model.predict(X_test
+                                       )
+# Plot predictions
+plt.figure()
+plt.scatter(yFit_elastic, y_train, c = "blue", marker = "s", label = "Training data")
+plt.scatter(y_pred_elastic, y_test, c = "lightgreen", marker = "s", label = "Validation data")
+plt.title("Elastic Net regression")
+plt.xlabel("Predicted values")
+plt.ylabel("Real values")
+plt.legend(loc = "upper left")
+plt.plot([10.5, 13.5], [10.5, 13.5], c = "red")
+plt.savefig("graphs/predictedvaluesElasticNet")
