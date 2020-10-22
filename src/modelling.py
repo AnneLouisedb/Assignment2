@@ -49,19 +49,6 @@ X_train = X_train[columns_to_use]
 X_test = X_test[columns_to_use]
 
 
-#scattermix
-attributes = [
-    "Lot Area",
-    "Overall Qual",
-    "Total Bsmt SF",
-    "Garage Area",
-    "Bedroom AbvGr",
-    "SalePrice"
-]
-plt.figure()
-scatter_matrix(all_data[attributes], figsize=(12,8))
-plt.savefig("graphs/scatter_matrix_plot")
-
 #functions in preprocessor
 
 print(all_data[columns_to_use].isna().sum())
@@ -93,40 +80,6 @@ ridge_model = Ridge()
 lasso_model = Lasso()
 elastic_model = ElasticNet()
 
-#looking at data
-plt.figure()
-sns.distplot(all_data['SalePrice'], bins=30)
-plt.savefig('graphs/ saleprice positive skewness') #its peak deviates from normal distribution
-
-plt.figure()
-plt.scatter(all_data['Overall Qual'], all_data["SalePrice"])
-plt.ylabel('Sale Price (dollars)', fontsize = 18)
-plt.xlabel('Overall Quality', fontsize = 18)
-plt.savefig("graphs/OverallQual")
-
-plt.figure()
-plt.scatter(all_data["Total Bsmt SF"], all_data["SalePrice"])
-plt.ylabel('Sale Price (dollars)', fontsize = 18)
-plt.xlabel('total Bsmt (square feet)', fontsize = 18)
-plt.savefig("graphs/Total_Bsmt_SF")
-
-plt.figure()
-plt.scatter(all_data['Garage Area'], all_data["SalePrice"])
-plt.ylabel('Sale Price (dollars)', fontsize = 18)
-plt.xlabel('Garage Area (square feet)', fontsize = 18)
-plt.savefig("graphs/garage_area")
-
-plt.figure()
-plt.scatter(all_data["Lot Area"], all_data["SalePrice"])
-plt.ylabel('Sale Price (dollars)', fontsize = 18)
-plt.xlabel('Lot Area (square feet)', fontsize = 18)
-plt.savefig("graphs/lot_area")
-
-plt.figure()
-plt.scatter(all_data["Bedroom AbvGr"], all_data["SalePrice"])
-plt.ylabel('Sale Price (dollars)', fontsize = 18)
-plt.xlabel("Bedroom AbvGr", fontsize = 18)
-plt.savefig("graphs/Bedroom_AbvGr")
 
 
 #Ridge Model
