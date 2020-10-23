@@ -81,7 +81,6 @@ lasso_model = Lasso()
 elastic_model = ElasticNet()
 
 
-
 #Ridge Model
 cross_val_scores_ridge = [] #this stores average cross validation scores
 alpha_ridge = []
@@ -210,6 +209,7 @@ chosen_model = ElasticNet(alpha = 0.01)
 chosen_model.fit(X_train, y_Train)
 yFit_elastic = chosen_model.predict(X_train)
 y_pred_elastic = chosen_model.predict(X_test)
+
 # Plot predictions chosen model
 plt.figure()
 plt.scatter(yFit_elastic, y_train, c = "blue", marker = "s", label = "Training data")

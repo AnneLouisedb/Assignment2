@@ -23,6 +23,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV, cross_val_score, cross_val_predict
 from sklearn.linear_model import ElasticNet, SGDRegressor
 from copy import deepcopy
+from NewModelling import X_train2
 from src.extra_functions import plot_model, plot_learning_curves
 
 
@@ -47,8 +48,15 @@ X_train, X_test, y_train, y_test = train_test_split(
 X_train = X_train[columns_to_use]
 X_test = X_test[columns_to_use]
 
+#functions in preprocessor
 
-#scattermix
+print(all_data[columns_to_use].isna().sum())
+for columns in columns_to_use:
+    all_data[columns] = all_data[columns].fillna(0)
+
+print(all_data[columns_to_use].isna().sum())
+
+#scattermix - data 1
 attributes = [
     "Lot Area",
     "Overall Qual",
@@ -60,6 +68,7 @@ attributes = [
 plt.figure()
 scatter_matrix(all_data[attributes], figsize=(12,8))
 plt.savefig("graphs/scatter_matrix_plot")
+
 
 #looking at data
 plt.figure()
@@ -95,3 +104,5 @@ plt.scatter(all_data["Bedroom AbvGr"], all_data["SalePrice"])
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel("Bedroom AbvGr", fontsize = 18)
 plt.savefig("graphs/Bedroom_AbvGr")
+
+
