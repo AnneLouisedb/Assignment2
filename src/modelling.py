@@ -14,7 +14,7 @@ from sklearn.model_selection import train_test_split, RepeatedKFold
 from sklearn.linear_model import LinearRegression
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.metrics import mean_squared_error
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, RidgeCV, LassoCV, LassoLarsCV
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler, MinMaxScaler, LabelEncoder, OneHotEncoder
@@ -120,7 +120,7 @@ print(f"best score Ridge: {ridge_regressor.best_score_}")
 
 #plot learning curves
 plt.figure()
-plot_learning_curves(Ridge( alpha = 5, fit_intercept = True, solver = 'svd'), X_train, y_Train)
+plot_learning_curves(Ridge( alpha = 5, fit_intercept = True, solver = 'cholesky'), X_train, y_Train)
 plt.title("Ridge, 5 features")
 plt.savefig("graphs/ridge data1 learning curve")
 
@@ -166,7 +166,7 @@ print(f"best score Lasso:{lasso_regressor.best_score_}")
 
 #plot learning curve
 plt.figure()
-plot_learning_curves(Lasso(alpha = 25, copy_X = False, fit_intercept = True, selection = 'random'), X_train, y_Train)
+plot_learning_curves(Lasso(alpha = 30, copy_X = False, fit_intercept = True, selection = 'random'), X_train, y_Train)
 plt.savefig("graphs/ lasso learning curve")
 
 # Elastic Net
@@ -213,6 +213,14 @@ chosen_model.fit(X_train, y_Train)
 yFit_elastic = chosen_model.predict(X_train)
 y_pred_elastic = chosen_model.predict(X_test)
 
+r2 = r2_score(y_test, y_pred_elastic)
+mae = mean_absolute_error(y_test , y_pred_elastic)
+mse = mean_squared_error(y_test, y_pred_elastic)
+
+print(f"r2: {r2}")
+print(f"mae: {mae}")
+print(f"mse: {mse}")
+
 # Plot predictions chosen model
 plt.figure()
 plt.scatter(yFit_elastic, y_train, c = "blue", marker = "s", label = "Training data")
@@ -225,13 +233,6 @@ plt.plot([10.5, 13.5], [10.5, 13.5], c = "red")
 plt.savefig("graphs/predictedvaluesElasticNet")
 
 
-print(
-    evaluate_model(
-        chosen_model,
-        test_data.drop(columns="SalePrice"),
-        test_data["SalePrice"],
-        train=True,
-        Xtrain=all_data.drop(columns="SalePrice"),
-        ytrain=all_data["SalePrice"],
-    )
-)
+
+
+

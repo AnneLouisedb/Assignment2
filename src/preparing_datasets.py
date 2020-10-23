@@ -17,9 +17,7 @@ def create_holdout(dataset, size=0.1):
     return holdout, remainder
 
 
-all_data = pd.read_csv(
-    data_dir / "AmesHousing.txt", sep="\t", index_col="Order"
-)
+all_data = pd.read_csv(data_dir / "housing-data.csv", index_col="Order")
 
 hold_out, remainder = create_holdout(all_data)
 

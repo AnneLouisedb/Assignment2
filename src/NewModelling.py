@@ -15,7 +15,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, RidgeCV, LassoCV, LassoLarsCV
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler, MinMaxScaler, LabelEncoder, OneHotEncoder
 from sklearn.compose import ColumnTransformer, make_column_transformer
@@ -235,7 +235,7 @@ alpha_ridge = []
 for i in range(1,9):
     ridgemodel = Ridge(alpha = i*0.25)
     scores = cross_val_score(ridgemodel, X_train2, y_train2, cv=8)
-    average_cross_val_score = mean(scores)*100 # as a percentage
+    average_cross_val_score = mean(scores)*100 # acccuracy
     cross_val_scores_ridge.append(average_cross_val_score)
     alpha_ridge.append(i*0.25)
 
@@ -272,7 +272,7 @@ Lambda = []
 for i in range (1,9):
     lassoModel = Lasso(i*0.25, tol = 0.0925)
     lassoModel.fit(X_train2, y_train2)
-    scores = cross_val_score(lassoModel, X_train2, y_train2, cv=8)
+    scores = cross_val_score(lassoModel, X_train2, y_train2, cv=8, scoring = 'accuracy')
     average_cross_val_score = mean(scores)*100
     cross_val_scores_lasso.append(average_cross_val_score)
     Lambda.append(i*0.25)
@@ -285,17 +285,17 @@ ax = plt.gca()
 ax.plot(Lambda, scores)
 plt.xlabel('Lambda')
 plt.ylabel('score')
-plt.title('Lasso Model_data2')
-plt.savefig("graphs/ Lamdas_Lasso_Model_data2")
+plt.title('Lasso Model_data2_accuracy')
+plt.savefig("graphs/ Lamdas_Lasso_Model_data2_accuracy")
 
 #example Lasso
-example_lasso = Lasso(alpha = 1.75)
+example_lasso = Lasso(alpha = 1.25)
 example_lasso.fit(X_train2, y_train2)
 print(example_lasso.score(X_test2, y_test2))
 
 #plot learning curve
 plt.figure()
-plot_learning_curves(Lasso(alpha = 1.75), X_train2, y_train2)
+plot_learning_curves(Lasso(alpha = 1.25), X_train2, y_train2)
 plt.savefig("graphs/ method1, lasso learining curve, data2")
 
 # Lasso Regressor L2, looking are more hyperparameters
@@ -372,3 +372,16 @@ plt.plot([10.5, 13.5], [10.5, 13.5], c = "red")
 plt.savefig("graphs/predictedvaluesElasticNet_data2")
 
 
+
+#Elastic Net Model
+chosen_model.fit(X_train2, y_train2)
+yFit_elastic = chosen_model.predict(X_train2)
+y_pred_elastic = chosen_model.predict(X_test2)
+
+r2 = r2_score(y_test2, y_pred_elastic)
+mae = mean_absolute_error(y_test2 , y_pred_elastic)
+mse = mean_squared_error(y_test2, y_pred_elastic)
+
+print(f"r2: {r2}")
+print(f"mae: {mae}")
+print(f"mse: {mse}")

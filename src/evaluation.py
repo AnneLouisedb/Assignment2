@@ -1,8 +1,12 @@
 #from modelling import chosen_model, ridge_model
+import pandas as pd
+from sklearn.linear_model import LinearRegression, Ridge, Lasso, RidgeCV, LassoCV, LassoLarsCV
+from sklearn.model_selection import GridSearchCV, cross_val_score, cross_val_predict
+from sklearn.linear_model import ElasticNet, SGDRegressor
 
-data_dir = Path("data/")
-all_data = pd.read_csv(data_dir / "housing-data.csv", index_col="Order")
-test_data = pd.read_csv(data_dir / "hold-out.csv", index_col="Order")
+data_dir = "/Users/annelouisedeboer/PycharmProjects/Assignment2/src/data"
+full_data = pd.read_csv(data_dir+  "/housing-data.csv", index_col="Order")
+test_data = pd.read_csv(data_dir+ "/hold-out.csv", index_col="Order")
 
 
 
@@ -40,8 +44,8 @@ print(
         test_data.drop(columns="SalePrice"),
         test_data["SalePrice"],
         train=True,
-        Xtrain=all_data.drop(columns="SalePrice"),
-        ytrain=all_data["SalePrice"],
+        Xtrain=full_data.drop(columns="SalePrice"),
+        ytrain=full_data["SalePrice"],
     )
 )
 
