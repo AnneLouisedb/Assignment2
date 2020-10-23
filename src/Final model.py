@@ -158,12 +158,6 @@ X_test = ordinal_encode(X_test, ordinal_col_dicts)
 X_train = X_train.fillna(0)
 X_test = X_test.fillna(0)
 
-#models
-reg_model = LinearRegression()
-ridge_model = Ridge()
-lasso_model = Lasso()
-elastic_model = ElasticNet()
-
 #Ridge Model
 cross_val_scores_ridge = [] #this stores average cross validation scores
 alpha_ridge = []
@@ -196,7 +190,7 @@ print(f"beste parameter Ridge: {ridge_regressor.best_params_}")
 print(f"best score Ridge: {ridge_regressor.best_score_}")
 
 #plot learning curves
-plot_learning_curves(Ridge( alpha = 5, fit_intercept = True, solver = 'svd'), X_train, y_train)
+plot_learning_curves(Ridge( alpha = 5, fit_intercept = True, solver = 'svd'), X_train, y_Train)
 
 #Lasso Regression
 cross_val_scores_lasso = []
@@ -205,7 +199,7 @@ Lambda = []
 for i in range (1,9):
     lassoModel = Lasso(i*0.25, tol = 0.0925)
     lassoModel.fit(X_train, y_train)
-    scores = cross_val_score(lassoModel, X_train, y_train, cv=8)
+    scores = cross_val_score(lassoModel, X_train, y_Train, cv=8)
     average_cross_val_score = mean(scores)*100
     cross_val_scores_lasso.append(average_cross_val_score)
     Lambda.append(i*0.25)

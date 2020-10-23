@@ -152,8 +152,10 @@ def ordinal_encode(data, ordinal_col_dicts):
 X_train2 = ordinal_encode(X_train2, ordinal_col_dicts) #numerical values assigned to feature class
 X_test2 = ordinal_encode(X_test2, ordinal_col_dicts)
 
-print(X_train2.columns)
+X_train2 = X_train2.fillna(0)
+X_test2 = X_test2.fillna(0)
 
+OverallQualitycheck = X_train2["Overall Qual"]
 
 # find categorical variables in train data
 train_categorical = [var for var in X_train2.columns if X_train2[var].dtype=='O']
@@ -163,7 +165,6 @@ train_numerical = [var for var in X_train2.columns if X_train2[var].dtype!='O']
 print('There are {} numerical variables in training data'.format(len(train_numerical)))
 
 print(X_train2.dtypes)
-
 
 
 #turning objects into integer
@@ -178,20 +179,22 @@ X_train2.hist(figsize=(20,20), xrot=-45)
 plt.savefig("graphs/data2histogram")
 
 #looking at new columns
+plt.figure()
 sns.distplot(X_train2["totalSF"])
-#sns.distplot(X_train2["Qual+Cond"])
 sns.distplot(X_train2["AllfloorSF"])
 
 plt.figure()
 plt.scatter(X_train2['totalSF'], y_train2)
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('total area SF', fontsize = 18)
+plt.title("2.Total area SF")
 plt.savefig("graphs/scatter totalSF")
 
 plt.figure()
 plt.scatter(all_data['Gr Liv Area'], all_data['SalePrice'])
 plt.ylabel('Sale Price (dollars)', fontsize = 18)
 plt.xlabel('Gr Liv Area', fontsize = 18)
+plt.title("2.Living area")
 plt.savefig("graphs/scatter GrLivArea")
 
 #scattermix
@@ -213,7 +216,6 @@ attributes2 = [
 plt.figure()
 scatter_matrix(all_data[attributes2], figsize=(12,8))
 plt.savefig("graphs/scatter_matrix_plot_data2")
-
 
 
 #There seems to be a linear relationship between totalSF and Saleprice.
@@ -329,7 +331,11 @@ plt.savefig("graphs/ElasticNet Model_data2")
 #Gridsearch Elastic Net
 elastic_params = {
     'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265,
-              270, 275, 290, 300, 500]}
+              270, 275, 290, 300, 500],
+'L1_ratio' : [0.1, 0.2, 0.3, 0.4, 0.5, 0.55, 0.65, 0.75, 0.6, 0.7, 0.8, 0.9],
+    'fit_intercept' : [True, False],
+'normalize' : [False, True],
+    'max_iter': [1000, 500, 200, 100, 20]}
 elastic_regressor = GridSearchCV(elastic_model, elastic_params, scoring='neg_mean_squared_error', cv=5)
 elastic_regressor.fit(X_train2, y_train2)
 print(f"best parameter Elastic Net:  {elastic_regressor.best_params_}")
@@ -345,9 +351,6 @@ X_test2 = X_test2.fillna(0) #error with NaN values, how to fix?
 #Elastic Net Model
 chosen_model.fit(X_train2, y_train2)
 
-#clf = LinearRegression()
-#clf.fit(x, y, n_iter=2000, lr=0.01) #changing number of iterations could change overfitting
-
 yFit_elastic = chosen_model.predict(X_train2)
 y_pred_elastic = chosen_model.predict(X_test2)
 
@@ -361,4 +364,5 @@ plt.ylabel("Real values")
 plt.legend(loc = "upper left")
 plt.plot([10.5, 13.5], [10.5, 13.5], c = "red")
 plt.savefig("graphs/predictedvaluesElasticNet_data2")
+
 
