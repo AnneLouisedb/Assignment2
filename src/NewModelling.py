@@ -78,6 +78,10 @@ num_to_cat = ['MS SubClass', 'Overall Qual',
 #these are examples of ordinal values
 all_data[num_to_cat] = all_data[num_to_cat].apply(lambda x: x.astype("str"))
 
+#check if it worked
+plt.figure()
+sns.boxplot(all_data['Kitchen AbvGr'],all_data["SalePrice"])
+plt.savefig("graphs/numerical_to_categorical")
 
 #encoding categorical variables
 #ordinal encoding using Label encoding
