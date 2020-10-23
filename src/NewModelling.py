@@ -332,10 +332,7 @@ plt.savefig("graphs/ElasticNet Model_data2")
 elastic_params = {
     'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265,
               270, 275, 290, 300, 500],
-'L1_ratio' : [0.1, 0.2, 0.3, 0.4, 0.5, 0.55, 0.65, 0.75, 0.6, 0.7, 0.8, 0.9],
-    'fit_intercept' : [True, False],
-'normalize' : [False, True],
-    'max_iter': [1000, 500, 200, 100, 20]}
+'l1_ratio' : [0.4, 0.5 0.6, 0.7, 0.8, 0.9]}
 elastic_regressor = GridSearchCV(elastic_model, elastic_params, scoring='neg_mean_squared_error', cv=5)
 elastic_regressor.fit(X_train2, y_train2)
 print(f"best parameter Elastic Net:  {elastic_regressor.best_params_}")
