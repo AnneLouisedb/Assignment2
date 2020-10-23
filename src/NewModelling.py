@@ -217,6 +217,11 @@ plt.figure()
 scatter_matrix(all_data[attributes2], figsize=(12,8))
 plt.savefig("graphs/scatter_matrix_plot_data2")
 
+corr = all_data[attributes2].corr()
+plt.figure()
+sns.heatmap(corr)
+plt.savefig("graphs/heatmap")
+
 
 #There seems to be a linear relationship between totalSF and Saleprice.
 # It looks even better than the GR Liv Area against SalePrice.
@@ -263,7 +268,18 @@ print(f"best score Ridge: {ridge_regressor.best_score_}")
 #plot learning curve
 plt.figure()
 plot_learning_curves(Ridge( alpha = 200, fit_intercept = True, solver = 'cholesky'), X_train2, y_train2)
+plt.ylim(0, 60000)
 plt.savefig("graphs/learningcurve_ridge_data2")
+
+#Ridge model for comparison
+chosen_ridge = Ridge( alpha = 200, fit_intercept = True, solver = 'cholesky')
+chosen_ridge.fit(X_train2, y_train2)
+yFit_ridge = chosen_ridge.predict(X_train2)
+y_pred_ridge = chosen_ridge.predict(X_test2)
+
+r2_ridge = r2_score(y_test2, y_pred_ridge)
+mae_ridge = mean_absolute_error(y_test2 , y_pred_ridge)
+mse_ridge = mean_squared_error(y_test2, y_pred_ridge)
 
 #Lasso Regression
 cross_val_scores_lasso = []
@@ -272,7 +288,7 @@ Lambda = []
 for i in range (1,9):
     lassoModel = Lasso(i*0.25, tol = 0.0925)
     lassoModel.fit(X_train2, y_train2)
-    scores = cross_val_score(lassoModel, X_train2, y_train2, cv=8, scoring = 'accuracy')
+    scores = cross_val_score(lassoModel, X_train2, y_train2, cv=8)
     average_cross_val_score = mean(scores)*100
     cross_val_scores_lasso.append(average_cross_val_score)
     Lambda.append(i*0.25)
@@ -285,8 +301,8 @@ ax = plt.gca()
 ax.plot(Lambda, scores)
 plt.xlabel('Lambda')
 plt.ylabel('score')
-plt.title('Lasso Model_data2_accuracy')
-plt.savefig("graphs/ Lamdas_Lasso_Model_data2_accuracy")
+plt.title('Lasso Model_data2')
+plt.savefig("graphs/ Lamdas_Lasso_Model_data2")
 
 #example Lasso
 example_lasso = Lasso(alpha = 1.25)
@@ -310,10 +326,24 @@ lasso_regressor.fit(X_train2, y_train2)
 print(f"best parameter Lasso:{lasso_regressor.best_params_}")
 print(f"best score Lasso:{lasso_regressor.best_score_}")
 
+
 #plot learning curve
 plt.figure()
 plot_learning_curves(Lasso(alpha = 200, copy_X = True, fit_intercept = True, selection = 'random'), X_train2, y_train2)
+plt.ylim(0, 10000)
 plt.savefig("graphs/ lasso learning curve_data2")
+
+#Lasso Model for comparison
+chosen_lasso = Lasso(alpha = 200, copy_X = True, fit_intercept = True, selection = 'random')
+chosen_lasso.fit(X_train2, y_train2)
+yFit_lasso = chosen_lasso.predict(X_train2)
+y_pred_lasso = chosen_lasso.predict(X_test2)
+
+r2_lasso = r2_score(y_test2, y_pred_lasso)
+mae_lasso = mean_absolute_error(y_test2 , y_pred_lasso)
+mse_lasso = mean_squared_error(y_test2, y_pred_lasso)
+
+
 
 # Elastic Net
 alpha=[]
@@ -350,17 +380,18 @@ print(f"best score Elastic Net: {elastic_regressor.best_score_}")
 #plot learning curve
 plt.figure()
 plot_learning_curves(ElasticNet(alpha = 0.03), X_train2, y_train2)
+plt.ylim(0,60000)
 plt.savefig("graphs/learningcurve elasticnet_data2")
 
-chosen_model = ElasticNet(alpha = 0.03)
+el_model = ElasticNet(alpha = 0.03)
 
 #Elastic Net Model
-chosen_model.fit(X_train2, y_train2)
+el_model.fit(X_train2, y_train2)
 
-yFit_elastic = chosen_model.predict(X_train2)
-y_pred_elastic = chosen_model.predict(X_test2)
+yFit_elastic = el_model.predict(X_train2)
+y_pred_elastic = el_model.predict(X_test2)
 
-# Plot predictions chosen model
+# Plot predictions elastic model
 plt.figure()
 plt.scatter(yFit_elastic, y_train2, c = "blue", marker = "s", label = "Training data")
 plt.scatter(y_pred_elastic, y_test2, c = "lightgreen", marker = "s", label = "Validation data")
@@ -374,14 +405,43 @@ plt.savefig("graphs/predictedvaluesElasticNet_data2")
 
 
 #Elastic Net Model
-chosen_model.fit(X_train2, y_train2)
-yFit_elastic = chosen_model.predict(X_train2)
-y_pred_elastic = chosen_model.predict(X_test2)
+el_model.fit(X_train2, y_train2)
+yFit_elastic = el_model.predict(X_train2)
+y_pred_elastic = el_model.predict(X_test2)
 
 r2 = r2_score(y_test2, y_pred_elastic)
 mae = mean_absolute_error(y_test2 , y_pred_elastic)
 mse = mean_squared_error(y_test2, y_pred_elastic)
 
-print(f"r2: {r2}")
-print(f"mae: {mae}")
-print(f"mse: {mse}")
+#comparing models on test data
+print(f"r2 score best elastic net: {r2}")
+print(f"mae score best elastic net: {mae}")
+print(f"mse score best elastic net: {mse}")
+
+print(f"r2 score best Lasso: {r2_lasso}")
+print(f"mae score best Lasso: {mae_lasso}")
+print(f"mse score best Lasso: {mse_lasso}")
+
+print(f"r2 score best Ridge: {r2_ridge}")
+print(f"mae score best Ridge: {mae_ridge}")
+print(f"mse score best Ridge: {mse_ridge}")
+
+
+chosen_model = Lasso(alpha = 30, copy_X = False, fit_intercept = True, selection = 'random')
+
+#Plotting final chosen model
+chosen_model.fit(X_train2, y_train2)
+yFit = chosen_model.predict(X_train2)
+y_pred = chosen_model.predict(X_test2)
+
+# Plot predictions elastic model
+plt.figure()
+plt.scatter(yFit, y_train2, c = "blue", marker = "s", label = "Training data")
+plt.scatter(y_pred, y_test2, c = "lightgreen", marker = "s", label = "Validation data")
+plt.title("Chosen model regression")
+plt.xlabel("Predicted values")
+plt.ylabel("Real values")
+plt.legend(loc = "upper left")
+plt.plot([10.5, 13.5], [10.5, 13.5], c = "red")
+plt.savefig("graphs/predictedvalues_chosenmodel")
+

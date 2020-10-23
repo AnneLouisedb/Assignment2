@@ -205,13 +205,13 @@ print(f"best score Elastic Net: {elastic_regressor.best_score_}")
 plt.figure()
 plot_learning_curves(ElasticNet(alpha = 0.01), X_train, y_Train)
 plt.savefig("graphs/learningcurve elastic net")
-chosen_model = ElasticNet(alpha = 0.01)
+el_model = ElasticNet(alpha = 0.01)
 
 
 #Elastic Net Model
-chosen_model.fit(X_train, y_Train)
-yFit_elastic = chosen_model.predict(X_train)
-y_pred_elastic = chosen_model.predict(X_test)
+el_model.fit(X_train, y_Train)
+yFit_elastic = el_model.predict(X_train)
+y_pred_elastic = el_model.predict(X_test)
 
 r2 = r2_score(y_test, y_pred_elastic)
 mae = mean_absolute_error(y_test , y_pred_elastic)
