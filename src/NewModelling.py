@@ -288,6 +288,16 @@ plt.ylabel('score')
 plt.title('Lasso Model_data2')
 plt.savefig("graphs/ Lamdas_Lasso_Model_data2")
 
+#example Lasso
+example_lasso = Lasso(alpha = 1.75)
+example_lasso.fit(X_train2, y_train2)
+print(example_lasso.score(X_test2, y_test2))
+
+#plot learning curve
+plt.figure()
+plot_learning_curves(Lasso(alpha = 1.75), X_train2, y_train2)
+plt.savefig("graphs/ method1, lasso learining curve, data2")
+
 # Lasso Regressor L2, looking are more hyperparameters
 lasso_params = {'alpha': [0.02, 0.024, 0.025, 0.026, 0.03, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 5.0, 10, 20, 15, 12, 8, 25, 30, 200],
                 "fit_intercept": [True, False],
@@ -331,8 +341,7 @@ plt.savefig("graphs/ElasticNet Model_data2")
 #Gridsearch Elastic Net
 elastic_params = {
     'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-2, 0.02, 0.024, 0.025, 0.026, 0.03, 1, 5, 10, 20, 200, 230, 250, 265,
-              270, 275, 290, 300, 500],
-'l1_ratio' : [0.4, 0.5 0.6, 0.7, 0.8, 0.9]}
+              270, 275, 290, 300, 500]}
 elastic_regressor = GridSearchCV(elastic_model, elastic_params, scoring='neg_mean_squared_error', cv=5)
 elastic_regressor.fit(X_train2, y_train2)
 print(f"best parameter Elastic Net:  {elastic_regressor.best_params_}")
@@ -344,7 +353,7 @@ plot_learning_curves(ElasticNet(alpha = 0.03), X_train2, y_train2)
 plt.savefig("graphs/learningcurve elasticnet_data2")
 
 chosen_model = ElasticNet(alpha = 0.03)
-X_test2 = X_test2.fillna(0) #error with NaN values, how to fix?
+
 #Elastic Net Model
 chosen_model.fit(X_train2, y_train2)
 

@@ -1,8 +1,9 @@
-from modelling import chosen_model, ridge_model
+#from modelling import chosen_model, ridge_model
 
 data_dir = Path("data/")
 all_data = pd.read_csv(data_dir / "housing-data.csv", index_col="Order")
 test_data = pd.read_csv(data_dir / "hold-out.csv", index_col="Order")
+
 
 
 def evaluate_model(
@@ -31,6 +32,7 @@ def evaluate_model(
     mse = mean_squared_error(ytest, ypred)
     return {"r2": r2, "mae": mae, "mse": mse}
 
+chosen_model = ElasticNet(alpha = 0.03)
 
 print(
     evaluate_model(
@@ -42,3 +44,4 @@ print(
         ytrain=all_data["SalePrice"],
     )
 )
+

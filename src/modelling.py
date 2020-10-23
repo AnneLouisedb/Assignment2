@@ -119,7 +119,10 @@ print(f"beste parameter Ridge: {ridge_regressor.best_params_}")
 print(f"best score Ridge: {ridge_regressor.best_score_}")
 
 #plot learning curves
+plt.figure()
 plot_learning_curves(Ridge( alpha = 5, fit_intercept = True, solver = 'svd'), X_train, y_Train)
+plt.title("Ridge, 5 features")
+plt.savefig("graphs/ridge data1 learning curve")
 
 #Lasso Regression
 cross_val_scores_lasso = []
@@ -221,3 +224,14 @@ plt.legend(loc = "upper left")
 plt.plot([10.5, 13.5], [10.5, 13.5], c = "red")
 plt.savefig("graphs/predictedvaluesElasticNet")
 
+
+print(
+    evaluate_model(
+        chosen_model,
+        test_data.drop(columns="SalePrice"),
+        test_data["SalePrice"],
+        train=True,
+        Xtrain=all_data.drop(columns="SalePrice"),
+        ytrain=all_data["SalePrice"],
+    )
+)
