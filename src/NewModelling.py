@@ -82,6 +82,8 @@ all_data[num_to_cat] = all_data[num_to_cat].apply(lambda x: x.astype("str"))
 #encoding categorical variables
 #ordinal encoding using Label encoding
 
+for columns in all_data.columns:
+    all_data[columns] = all_data[columns].fillna(0)
 
 #looking at boxplots
 sns.boxplot(x = all_data["Overall Qual"], y = all_data['SalePrice'])
@@ -89,6 +91,8 @@ sns.boxplot(x = all_data["Overall Qual"], y = all_data['SalePrice'])
 X_train2, X_test2, y_train2, y_test2 = train_test_split(
     all_data.drop(columns=target_column), all_data[target_column]
 )
+
+print(X_train2)
 
 X_train2["totalSF"] = X_train2['Gr Liv Area'] + X_train2['Total Bsmt SF']
 X_train2["AllfloorSF"] = X_train2["1st Flr SF"] + X_train2["2nd Flr SF"]
@@ -115,17 +119,14 @@ more_columns = [
 'Garage Qual',
 'Garage Cond']
 
-for columns in all_data.columns:
-    all_data[columns] = all_data[columns].fillna(0)
-X_train2 = X_train2.fillna(0)
-X_test2 = X_test2.fillna(0)
 
 X_train2 = X_train2[more_columns]
 X_test2 =X_test2[more_columns]
 
+X_train2 = X_train2.fillna(0)
+X_test2 = X_test2.fillna(0)
 
-
-
+print(X_train2.isnull().values.any())
 
 ordinal_col_dicts = {
 'Utilities': {'AllPub': 1, 'NoSeWa': 3, 'NoSewr':2, 'ELO':4},
@@ -151,8 +152,11 @@ def ordinal_encode(data, ordinal_col_dicts):
 X_train2 = ordinal_encode(X_train2, ordinal_col_dicts) #numerical values assigned to feature class
 X_test2 = ordinal_encode(X_test2, ordinal_col_dicts)
 
+print(X_train2.columns)
+
+
 # find categorical variables in train data
-train_categorical = [var for var in X_train2.columns if X_train2[var].dtype=='O'] #objects
+train_categorical = [var for var in X_train2.columns if X_train2[var].dtype=='O']
 print('There are {} categorical variables in training data'.format(len(train_categorical)))
 # find numerical variables in train data
 train_numerical = [var for var in X_train2.columns if X_train2[var].dtype!='O']
@@ -216,7 +220,7 @@ plt.savefig("graphs/scatter_matrix_plot_data2")
 # It looks even better than the GR Liv Area against SalePrice.
 
 y_train2 = y_train2.values.reshape(-1,1)
-y_test2 = y_test2.values.reshape(-1,1)
+
 #models
 reg_model = LinearRegression()
 ridge_model = Ridge()

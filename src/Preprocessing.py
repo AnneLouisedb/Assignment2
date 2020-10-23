@@ -31,13 +31,29 @@ img_dir = Path("../img")
 all_data = pd.read_csv(data_dir / "housing-data.csv", index_col="Order")
 target_column = "SalePrice"
 
+more_columns = [
+    "Lot Area",      #original columns used
+    "Overall Qual", #categorical
+    "Total Bsmt SF",
+    "Garage Area",
+    "Bedroom AbvGr", #categorical
+    "AllfloorSF", #new features
+    "totalSF",    #new
+   # "Qual+Cond",   #new , categorical
+'Year Built',
+'Fence',
+'Pool QC',
+'Utilities',   #ordinal values
+'House Style',
+'Garage Qual',
+'Garage Cond']
+
 # find categorical variables
 categorical = [var for var in all_data.columns if all_data[var].dtype=='O']
 print('There are {} categorical variables'.format(len(categorical)))
 # find numerical variables
 numerical = [var for var in all_data.columns if all_data[var].dtype!='O']
 print('There are {} numerical variables'.format(len(numerical)))
-
 
 
 numerical_transformer = Pipeline(steps=[
@@ -62,7 +78,39 @@ clf = Pipeline(steps=[('preprocessor', preprocessor),
 X_train, X_test, y_train, y_test = train_test_split(
     all_data.drop(columns=target_column), all_data[target_column]
 )
-clf.fit(X_train, y_train)
 
+#look at how much data is missing
+for var in all_data.columns:
+    if all_data[var].isnull().sum()>0:
+        print(var, all_data[var].isnull().mean())
 
+#the features for whicha lot of data is missing
+for var in all_data.columns:
+    if all_data[var].isnull().mean()>0.70:
+        print(f"more than 0.70 missing values: {var, all_data[var].unique()}")
 
+all_data['Alley'] = all_data['Alley'].fillna('None')
+all_data['Fence'] = all_data['Fence'].fillna('None')
+all_data['Pool QC'] = all_data['Pool QC'].fillna('None')
+all_data['Mics Feature'] = all_data['Misc Feature'].fillna('None')
+
+#numerical values:  discrete or continuous
+discrete = []
+for var in numerical:
+    if len(all_data[var].unique())<20:
+        print(var, ' values: ', all_data[var].unique())
+        discrete.append(var)
+
+continuous = [var for var in numerical if var not in discrete and var not in ['Id', 'SalePrice']]
+
+#creating new features
+X_train["totalSF"] = X_train['Gr Liv Area'] + X_train['Total Bsmt SF']
+X_train["AllfloorSF"] = X_train["1st Flr SF"] + X_train["2nd Flr SF"]
+X_train["Qual+Cond"] = X_train["Overall Qual"] + X_train["Overall Cond"]
+
+X_test["totalSF"] = X_test['Gr Liv Area'] + X_test['Total Bsmt SF']
+X_test["AllfloorSF"] = X_test["1st Flr SF"] + X_test["2nd Flr SF"]
+X_test["Qual+Cond"] = X_test["Overall Qual"] + X_test["Overall Cond"]
+
+X_train = X_train.fillna(0)
+X_test = X_test.fillna(0)
